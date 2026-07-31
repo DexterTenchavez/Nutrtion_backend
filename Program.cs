@@ -84,6 +84,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IChildRecordService, ChildRecordService>();
 
 // ✅ FIXED CORS Configuration
 builder.Services.AddCors(options =>

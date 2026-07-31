@@ -13,6 +13,7 @@ namespace Nutrition_backend.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Barangay> Barangays { get; set; }
         public DbSet<VitaminAReport> VitaminAReports { get; set; }
+        public DbSet<ChildRecord> ChildRecords { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
 {

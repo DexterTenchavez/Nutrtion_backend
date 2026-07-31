@@ -1,25 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using Nutrition_backend.Data;
-using Nutrition_backend.Models;
 using Nutrition_backend.DTOs;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Nutrition_backend.Models;
 
 namespace Nutrition_backend.Services
 {
     public interface IReportService
     {
-        Task<VitaminAReport> CreateReportAsync(ReportDto reportDto, int userId);
-        Task<VitaminAReport> GetReportByIdAsync(int id);
-        Task<List<VitaminAReport>> GetReportsAsync(string? barangay = null, string? status = null);
-        Task<VitaminAReport> UpdateReportAsync(int id, ReportDto reportDto, int userId);
-        Task<VitaminAReport> ApproveReportAsync(int id, int adminId, string? remarks = null);
-        Task<bool> DeleteReportAsync(int id);
-        Task<List<VitaminAReport>> GetUserReportsAsync(int userId);
-        Task<OverallReportDto> GetOverallReportAsync(string? quarter = null, int? year = null);
-        Task<ReportSummaryDto> GetBarangaySummaryAsync(string barangay);
-        Task<ReportSummaryDto> GetReportSummaryAsync(string? barangay = null);
+        Task<BarangayReportDto> GetBarangayReportAsync(string barangay);
+        Task<OverallReportDto> GetOverallReportAsync(int year);
+        Task<List<ChildRecord>> GetChildRecordsAsync(string? barangay = null);
     }
 
     public class ReportService : IReportService
@@ -31,269 +21,102 @@ namespace Nutrition_backend.Services
             _context = context;
         }
 
-        public async Task<VitaminAReport> CreateReportAsync(ReportDto reportDto, int userId)
-{
-    var report = new VitaminAReport
-    {
-        Barangay = reportDto.Barangay,
-        Purok = reportDto.Purok,
-        Months6To11 = reportDto.Months6To11,
-        Months12To59 = reportDto.Months12To59,
-        UnderweightSUW = reportDto.UnderweightSUW,
-        ReportedByUserId = userId,
-        ReportedDate = DateTime.UtcNow,
-        Status = "pending",
-        Remarks = reportDto.Remarks,
-        Quarter = reportDto.Quarter,
-        Year = reportDto.Year ?? DateTime.UtcNow.Year
-    };
-
-    _context.VitaminAReports.Add(report);
-    await _context.SaveChangesAsync();
-
-    return report;
-}
-
-        public async Task<VitaminAReport> GetReportByIdAsync(int id)
+        public async Task<BarangayReportDto> GetBarangayReportAsync(string barangay)
         {
-            var report = await _context.VitaminAReports
-                .Include(r => r.ReportedBy)
-                .Include(r => r.ApprovedBy)
-                .FirstOrDefaultAsync(r => r.Id == id);
-
-            if (report == null)
-            {
-                throw new KeyNotFoundException($"Report with ID {id} not found");
-            }
-
-            return report;
-        }
-
-        public async Task<List<VitaminAReport>> GetReportsAsync(string? barangay = null, string? status = null)
-        {
-            var query = _context.VitaminAReports
-                .Include(r => r.ReportedBy)
-                .Include(r => r.ApprovedBy)
-                .AsQueryable();
-
-            if (!string.IsNullOrEmpty(barangay))
-            {
-                query = query.Where(r => r.Barangay == barangay);
-            }
-
-            if (!string.IsNullOrEmpty(status))
-            {
-                query = query.Where(r => r.Status == status);
-            }
-
-            return await query
-                .OrderByDescending(r => r.ReportedDate)
-                .ToListAsync();
-        }
-
-        public async Task<VitaminAReport> UpdateReportAsync(int id, ReportDto reportDto, int userId)
-        {
-            var report = await GetReportByIdAsync(id);
-
-            if (report.Status == "approved")
-            {
-                throw new InvalidOperationException("Cannot update an approved report");
-            }
-
-            report.Barangay = reportDto.Barangay;
-            report.Purok = reportDto.Purok;
-            report.Months6To11 = reportDto.Months6To11;
-            report.Months12To59 = reportDto.Months12To59;
-            report.UnderweightSUW = reportDto.UnderweightSUW;
-            report.Remarks = reportDto.Remarks;
-
-            await _context.SaveChangesAsync();
-
-            return report;
-        }
-
-        public async Task<VitaminAReport> ApproveReportAsync(int id, int adminId, string? remarks = null)
-        {
-            var report = await GetReportByIdAsync(id);
-
-            if (report.Status == "approved")
-            {
-                throw new InvalidOperationException("Report is already approved");
-            }
-
-            report.Status = "approved";
-            report.ApprovedByUserId = adminId;
-            report.ApprovedDate = DateTime.UtcNow;
-            report.Remarks = remarks ?? report.Remarks;
-
-            await _context.SaveChangesAsync();
-
-            return report;
-        }
-
-        public async Task<bool> DeleteReportAsync(int id)
-        {
-            var report = await _context.VitaminAReports.FindAsync(id);
-            
-            if (report == null)
-            {
-                return false;
-            }
-
-            _context.VitaminAReports.Remove(report);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<List<VitaminAReport>> GetUserReportsAsync(int userId)
-        {
-            return await _context.VitaminAReports
-                .Include(r => r.ReportedBy)
-                .Include(r => r.ApprovedBy)
-                .Where(r => r.ReportedByUserId == userId)
-                .OrderByDescending(r => r.ReportedDate)
-                .ToListAsync();
-        }
-
-        public async Task<OverallReportDto> GetOverallReportAsync(string? quarter = null, int? year = null)
-        {
-            var targetYear = year ?? DateTime.UtcNow.Year;
-            
-            var query = _context.VitaminAReports
-                .Where(r => r.Year == targetYear && r.Status == "approved")
-                .AsQueryable();
-
-            if (!string.IsNullOrEmpty(quarter))
-            {
-                query = query.Where(r => r.Quarter == quarter);
-            }
-
-            var reports = await query
-                .Include(r => r.ReportedBy)
-                .Include(r => r.ApprovedBy)
+            var records = await _context.ChildRecords
+                .Where(r => r.Barangay == barangay)
                 .ToListAsync();
 
-            var overallReport = new OverallReportDto
+            var purokReports = new List<PurokReportDto>();
+
+            for (int p = 1; p <= 7; p++)
             {
-                Year = targetYear.ToString(),
-                Quarter = quarter,
-                GeneratedDate = DateTime.UtcNow
+                var purokRecords = records.Where(r => r.Purok == p).ToList();
+                purokReports.Add(new PurokReportDto
+                {
+                    Purok = p,
+                    Months6To11 = purokRecords.Count(r => r.AgeMonths >= 6 && r.AgeMonths <= 11),
+                    Months12To59 = purokRecords.Count(r => r.AgeMonths >= 12 && r.AgeMonths <= 59),
+                    UnderweightSUW = purokRecords.Count(r => r.NutritionalStatus == "Underweight" || r.NutritionalStatus == "Severely Underweight")
+                });
+            }
+
+            var total = new ReportTotalDto
+            {
+                Months6To11 = purokReports.Sum(p => p.Months6To11),
+                Months12To59 = purokReports.Sum(p => p.Months12To59),
+                UnderweightSUW = purokReports.Sum(p => p.UnderweightSUW)
             };
 
-            var barangayGroups = reports
-                .Where(r => r.Purok == 0)
+            return new BarangayReportDto
+            {
+                Barangay = barangay,
+                PurokReports = purokReports,
+                Total = total,
+                CertifiedCorrect = "BNS",
+                ApprovedBy = "Brgy. Captain"
+            };
+        }
+
+        public async Task<OverallReportDto> GetOverallReportAsync(int year)
+        {
+            var records = await _context.ChildRecords
+                .Where(r => r.RecordedDate.Year == year)
+                .ToListAsync();
+
+            var barangays = records
                 .GroupBy(r => r.Barangay)
+                .Select(g => new BarangaySummaryDto
+                {
+                    Barangay = g.Key,
+                    Months6To11 = g.Count(r => r.AgeMonths >= 6 && r.AgeMonths <= 11),
+                    Months12To59 = g.Count(r => r.AgeMonths >= 12 && r.AgeMonths <= 59),
+                    UnderweightSUW = g.Count(r => r.NutritionalStatus == "Underweight" || r.NutritionalStatus == "Severely Underweight")
+                })
+                .OrderBy(b => b.Barangay)
                 .ToList();
 
             var allBarangays = BarangayData.AllBarangays;
+            var finalBarangays = new List<BarangaySummaryDto>();
 
             foreach (var barangay in allBarangays)
             {
-                var barangayReports = barangayGroups.FirstOrDefault(g => g.Key == barangay);
-                
-                var barangayDto = new BarangayReportDto
+                var existing = barangays.FirstOrDefault(b => b.Barangay == barangay);
+                finalBarangays.Add(new BarangaySummaryDto
                 {
                     Barangay = barangay,
-                    Months6To11 = barangayReports?.Sum(r => r.Months6To11) ?? 0,
-                    Months12To59 = barangayReports?.Sum(r => r.Months12To59) ?? 0,
-                    UnderweightSUW = barangayReports?.Sum(r => r.UnderweightSUW) ?? 0,
-                    Status = barangayReports != null ? "Completed" : "No Report",
-                    ReportedDate = barangayReports?.FirstOrDefault()?.ReportedDate
-                };
-
-                var purokDetails = reports
-                    .Where(r => r.Barangay == barangay && r.Purok > 0)
-                    .OrderBy(r => r.Purok)
-                    .Select(r => new PurokDetailDto
-                    {
-                        Purok = r.Purok,
-                        Months6To11 = r.Months6To11,
-                        Months12To59 = r.Months12To59,
-                        UnderweightSUW = r.UnderweightSUW
-                    })
-                    .ToList();
-
-                barangayDto.PurokDetails = purokDetails;
-                overallReport.BarangayReports.Add(barangayDto);
+                    Months6To11 = existing?.Months6To11 ?? 0,
+                    Months12To59 = existing?.Months12To59 ?? 0,
+                    UnderweightSUW = existing?.UnderweightSUW ?? 0
+                });
             }
 
-            overallReport.OverallTotal = new OverallTotalDto
+            var overallTotal = new OverallTotalDto
             {
-                TotalMonths6To11 = overallReport.BarangayReports.Sum(b => b.Months6To11),
-                TotalMonths12To59 = overallReport.BarangayReports.Sum(b => b.Months12To59),
-                TotalUnderweightSUW = overallReport.BarangayReports.Sum(b => b.UnderweightSUW),
-                TotalBarangays = overallReport.BarangayReports.Count,
-                ApprovedCount = overallReport.BarangayReports.Count(b => b.Status == "Completed"),
-                PendingCount = overallReport.BarangayReports.Count(b => b.Status == "No Report")
+                Months6To11 = finalBarangays.Sum(b => b.Months6To11),
+                Months12To59 = finalBarangays.Sum(b => b.Months12To59),
+                UnderweightSUW = finalBarangays.Sum(b => b.UnderweightSUW),
+                TotalBarangays = finalBarangays.Count(b => b.Months6To11 > 0 || b.Months12To59 > 0 || b.UnderweightSUW > 0)
             };
 
-            return overallReport;
+            return new OverallReportDto
+            {
+                Year = year.ToString(),
+                Barangays = finalBarangays,
+                OverallTotal = overallTotal,
+                PreparedBy = "Cristine A. Macahis, MNPC",
+                NotedBy = "Jehd Stephen O. Cutamora, RN"
+            };
         }
 
-        public async Task<ReportSummaryDto> GetReportSummaryAsync(string? barangay = null)
+        public async Task<List<ChildRecord>> GetChildRecordsAsync(string? barangay = null)
         {
-            var query = _context.VitaminAReports
-                .Where(r => r.Status == "approved")
-                .AsQueryable();
-
+            var query = _context.ChildRecords.AsQueryable();
             if (!string.IsNullOrEmpty(barangay))
             {
                 query = query.Where(r => r.Barangay == barangay);
             }
-
-            var reports = await query.ToListAsync();
-
-            var summary = new ReportSummaryDto
-            {
-                Barangay = barangay ?? "All Barangays",
-                TotalReports = reports.Count,
-                TotalMonths6To11 = reports.Sum(r => r.Months6To11),
-                TotalMonths12To59 = reports.Sum(r => r.Months12To59),
-                TotalUnderweightSUW = reports.Sum(r => r.UnderweightSUW),
-                TotalChildren = reports.Sum(r => r.Months6To11 + r.Months12To59 + r.UnderweightSUW),
-                ReportsByPurok = reports
-                    .Where(r => r.Purok > 0)
-                    .GroupBy(r => r.Purok)
-                    .Select(g => new PurokSummaryDto
-                    {
-                        Purok = g.Key,
-                        TotalChildren = g.Sum(r => r.Months6To11 + r.Months12To59 + r.UnderweightSUW),
-                        Count = g.Count()
-                    })
-                    .ToList()
-            };
-
-            return summary;
-        }
-
-        public async Task<ReportSummaryDto> GetBarangaySummaryAsync(string barangay)
-        {
-            var reports = await _context.VitaminAReports
-                .Where(r => r.Barangay == barangay && r.Status == "approved")
-                .ToListAsync();
-
-            var summary = new ReportSummaryDto
-            {
-                Barangay = barangay,
-                TotalReports = reports.Count,
-                TotalMonths6To11 = reports.Sum(r => r.Months6To11),
-                TotalMonths12To59 = reports.Sum(r => r.Months12To59),
-                TotalUnderweightSUW = reports.Sum(r => r.UnderweightSUW),
-                TotalChildren = reports.Sum(r => r.Months6To11 + r.Months12To59 + r.UnderweightSUW),
-                ReportsByPurok = reports
-                    .Where(r => r.Purok > 0)
-                    .GroupBy(r => r.Purok)
-                    .Select(g => new PurokSummaryDto
-                    {
-                        Purok = g.Key,
-                        TotalChildren = g.Sum(r => r.Months6To11 + r.Months12To59 + r.UnderweightSUW),
-                        Count = g.Count()
-                    })
-                    .OrderBy(p => p.Purok)
-                    .ToList()
-            };
-
-            return summary;
+            return await query.OrderByDescending(r => r.RecordedDate).ToListAsync();
         }
     }
 }
