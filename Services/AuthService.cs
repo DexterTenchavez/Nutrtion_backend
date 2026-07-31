@@ -1,0 +1,150 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Nutrition_backend.Data;
+using Nutrition_backend.Models;
+using Nutrition_backend.DTOs;
+
+namespace Nutrition_backend.Services
+{
+    public interface IAuthService
+    {
+        Task<AuthResponseDto> LoginAsync(LoginDto loginDto);
+        Task<AuthResponseDto> RegisterAsync(RegisterDto registerDto);
+        Task<User?> GetUserByIdAsync(int id);
+        Task<bool> UserExistsAsync(string username);
+    }
+
+    public class AuthService : IAuthService
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly IPasswordService _passwordService;
+        private readonly IConfiguration _configuration;
+
+        public AuthService(
+            ApplicationDbContext context,
+            IPasswordService passwordService,
+            IConfiguration configuration)
+        {
+            _context = context;
+            _passwordService = passwordService;
+            _configuration = configuration;
+        }
+
+        public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Username == loginDto.Username || u.Email == loginDto.Username);
+
+            if (user == null || !_passwordService.VerifyPassword(loginDto.Password, user.PasswordHash))
+            {
+                throw new UnauthorizedAccessException("Invalid username or password");
+            }
+
+            if (!user.IsActive)
+            {
+                throw new UnauthorizedAccessException("Account is deactivated");
+            }
+
+            var token = GenerateJwtToken(user);
+
+            return new AuthResponseDto
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email,
+                Role = user.Role,
+                Barangay = user.Barangay,
+                Token = token,
+                ExpiresAt = DateTime.UtcNow.AddHours(24)
+            };
+        }
+
+        public async Task<AuthResponseDto> RegisterAsync(RegisterDto registerDto)
+        {
+            // Check if user exists
+            if (await _context.Users.AnyAsync(u => u.Username == registerDto.Username))
+            {
+                throw new InvalidOperationException("Username already exists");
+            }
+
+            if (await _context.Users.AnyAsync(u => u.Email == registerDto.Email))
+            {
+                throw new InvalidOperationException("Email already exists");
+            }
+
+            // Validate barangay for staff
+            if (registerDto.Role == "staff" && string.IsNullOrEmpty(registerDto.Barangay))
+            {
+                throw new InvalidOperationException("Barangay is required for staff");
+            }
+
+            var user = new User
+            {
+                Username = registerDto.Username,
+                Email = registerDto.Email,
+                PasswordHash = _passwordService.HashPassword(registerDto.Password),
+                Role = registerDto.Role ?? "staff",
+                Barangay = registerDto.Barangay,
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            var token = GenerateJwtToken(user);
+
+            return new AuthResponseDto
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email,
+                Role = user.Role,
+                Barangay = user.Barangay,
+                Token = token,
+                ExpiresAt = DateTime.UtcNow.AddHours(24)
+            };
+        }
+
+        public async Task<User?> GetUserByIdAsync(int id)
+        {
+            return await _context.Users.FindAsync(id);
+        }
+
+        public async Task<bool> UserExistsAsync(string username)
+        {
+            return await _context.Users.AnyAsync(u => u.Username == username);
+        }
+
+        private string GenerateJwtToken(User user)
+        {
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not configured"))
+            );
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role),
+                new Claim("Barangay", user.Barangay ?? string.Empty)
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(24),
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+    }
+}
