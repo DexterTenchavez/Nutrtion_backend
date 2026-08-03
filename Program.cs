@@ -82,6 +82,7 @@ builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IChildRecordService, ChildRecordService>();
+builder.Services.AddScoped<IReportDataEntryService, ReportDataEntryService>();
 
 builder.Services.AddCors(options =>
 {
