@@ -9,11 +9,11 @@ using Nutrition_backend.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.WebHost.UseUrls("http://0.0.0.0:5210", "http://localhost:5210");
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// Configure Swagger with JWT support
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo 
@@ -48,14 +48,12 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Database Configuration
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-// Authentication Configuration
 var jwtKey = builder.Configuration["Jwt:Key"]
     ?? throw new InvalidOperationException("JWT Key not configured");
 
@@ -80,27 +78,25 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("StaffOnly", policy => policy.RequireRole("staff"));
 });
 
-// Service Registration
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IChildRecordService, ChildRecordService>();
 
-// ✅ FIXED CORS Configuration
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
         policy =>
         {
-            policy.AllowAnyOrigin()
+            policy.SetIsOriginAllowed(origin => true)
                   .AllowAnyMethod()
-                  .AllowAnyHeader();
+                  .AllowAnyHeader()
+                  .AllowCredentials();
         });
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -115,7 +111,6 @@ else
     app.UseHttpsRedirection();
 }
 
-// ✅ USE THE FIXED CORS
 app.UseCors("AllowAll");
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
@@ -125,7 +120,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Ensure database is created and migrations are applied
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
