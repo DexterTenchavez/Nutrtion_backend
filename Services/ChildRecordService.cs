@@ -12,6 +12,7 @@ namespace Nutrition_backend.Services
         Task<ChildRecord?> GetByIdAsync(int id);
         Task<ChildRecord> UpdateAsync(int id, ChildRecordDto dto);
         Task<bool> DeleteAsync(int id);
+        Task<bool> CheckDuplicateAsync(string fullName, string barangay, int purok, int? excludeId = null);
     }
 
     public class ChildRecordService : IChildRecordService
@@ -37,7 +38,7 @@ namespace Nutrition_backend.Services
                 Height = dto.Height,
                 NutritionalStatus = dto.NutritionalStatus,
                 RecordedBy = userId,  // ← This must be a valid User ID
-                RecordedDate = DateTime.UtcNow
+                RecordedDate = dto.RecordedDate != DateTime.MinValue ? dto.RecordedDate : DateTime.UtcNow, 
             };
 
             _context.ChildRecords.Add(record);
@@ -51,6 +52,21 @@ namespace Nutrition_backend.Services
                 .Include(r => r.User)
                 .OrderByDescending(r => r.RecordedDate)
                 .ToListAsync();
+        }
+
+        public async Task<bool> CheckDuplicateAsync(string fullName, string barangay, int purok, int? excludeId = null)
+        {
+            var query = _context.ChildRecords
+                .Where(r => r.FullName.ToLower() == fullName.ToLower() 
+                    && r.Barangay == barangay 
+                    && r.Purok == purok);
+            
+            if (excludeId.HasValue)
+            {
+                query = query.Where(r => r.Id != excludeId.Value);
+            }
+            
+            return await query.AnyAsync();
         }
 
         public async Task<ChildRecord?> GetByIdAsync(int id)

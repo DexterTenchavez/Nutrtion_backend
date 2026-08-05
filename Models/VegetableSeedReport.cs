@@ -15,20 +15,9 @@ namespace Nutrition_backend.Models
         public int Purok { get; set; }
         
         [Required]
-        public int TotalHouseholds { get; set; }
+    public string HouseholdName { get; set; } = string.Empty;
         
-        public int PoorFamiliesGivenSeeds { get; set; }
-        
-        public string? SeedType1 { get; set; }
-        public int SeedCount1 { get; set; }
-        
-        public string? SeedType2 { get; set; }
-        public int SeedCount2 { get; set; }
-        
-        public string? SeedType3 { get; set; }
-        public int SeedCount3 { get; set; }
-        
-        public int SubTotal { get; set; }
+        public string? SeedTypes { get; set; }
         
         public int Year { get; set; }
         public DateTime RecordedDate { get; set; } = DateTime.UtcNow;

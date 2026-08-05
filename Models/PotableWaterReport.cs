@@ -15,7 +15,7 @@ namespace Nutrition_backend.Models
         public int Purok { get; set; }
         
         [Required]
-        public int TotalHouseholds { get; set; }
+        public string HouseholdName { get; set; } = string.Empty;
         
         public int Level1 { get; set; }
         public int Level2 { get; set; }

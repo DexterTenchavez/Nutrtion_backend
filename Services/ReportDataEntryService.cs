@@ -7,22 +7,58 @@ namespace Nutrition_backend.Services
 {
     public interface IReportDataEntryService
     {
+
         Task<AnimalRaisingResponseDto> CreateAnimalRaisingAsync(AnimalRaisingEntryDto dto);
         Task<List<AnimalRaisingResponseDto>> GetAnimalRaisingAsync(string barangay, int year);
+        Task<AnimalRaisingResponseDto> UpdateAnimalRaisingAsync(int id, AnimalRaisingEntryDto dto);
+        Task<bool> DeleteAnimalRaisingAsync(int id);
+
+
+        
         Task<PotableWaterResponseDto> CreatePotableWaterAsync(PotableWaterEntryDto dto);
         Task<List<PotableWaterResponseDto>> GetPotableWaterAsync(string barangay, int year);
+        Task<PotableWaterResponseDto> UpdatePotableWaterAsync(int id, PotableWaterEntryDto dto);
+        Task<bool> DeletePotableWaterAsync(int id);
+
+
+        
         Task<IodizedSaltResponseDto> CreateIodizedSaltAsync(IodizedSaltEntryDto dto);
         Task<List<IodizedSaltResponseDto>> GetIodizedSaltAsync(string barangay);
+        Task<IodizedSaltResponseDto> UpdateIodizedSaltAsync(int id, IodizedSaltEntryDto dto);
+        Task<bool> DeleteIodizedSaltAsync(int id);
+
+
+
         Task<CRResponseDto> CreateCRAsync(CREntryDto dto);
         Task<List<CRResponseDto>> GetCRAsync(string barangay, int year);
+        Task<CRResponseDto> UpdateCRAsync(int id, CREntryDto dto);
+        Task<bool> DeleteCRAsync(int id);
+
+
+
         Task<BackyardGardeningResponseDto> CreateBackyardGardeningAsync(BackyardGardeningEntryDto dto);
         Task<List<BackyardGardeningResponseDto>> GetBackyardGardeningAsync(string barangay, int year);
+        Task<BackyardGardeningResponseDto> UpdateBackyardGardeningAsync(int id, BackyardGardeningEntryDto dto);
+        Task<bool> DeleteBackyardGardeningAsync(int id);
+
+
+
         Task<PregnantWomenResponseDto> CreatePregnantWomenAsync(PregnantWomenEntryDto dto);
         Task<List<PregnantWomenResponseDto>> GetPregnantWomenAsync(string barangay, int year);
+        Task<PregnantWomenResponseDto> UpdatePregnantWomenAsync(int id, PregnantWomenEntryDto dto);
+        Task<bool> DeletePregnantWomenAsync(int id);
+
+
         Task<VegetableSeedResponseDto> CreateVegetableSeedAsync(VegetableSeedEntryDto dto);
         Task<List<VegetableSeedResponseDto>> GetVegetableSeedAsync(string barangay, int year);
+        Task<VegetableSeedResponseDto> UpdateVegetableSeedAsync(int id, VegetableSeedEntryDto dto);
+        Task<bool> DeleteVegetableSeedAsync(int id);
+
+
         Task<AnimalDispersalResponseDto> CreateAnimalDispersalAsync(AnimalDispersalEntryDto dto);
         Task<List<AnimalDispersalResponseDto>> GetAnimalDispersalAsync(string barangay, int year);
+        Task<AnimalDispersalResponseDto> UpdateAnimalDispersalAsync(int id, AnimalDispersalEntryDto dto);
+        Task<bool> DeleteAnimalDispersalAsync(int id);
     }
 
     public class ReportDataEntryService : IReportDataEntryService
@@ -40,7 +76,7 @@ namespace Nutrition_backend.Services
             {
                 Barangay = dto.Barangay,
                 Purok = dto.Purok,
-                TotalHouseholds = dto.TotalHouseholds,
+                HouseholdName = dto.HouseholdName,
                 ChickenMale = dto.ChickenMale,
                 ChickenFemale = dto.ChickenFemale,
                 PigMale = dto.PigMale,
@@ -51,10 +87,9 @@ namespace Nutrition_backend.Services
                 CowFemale = dto.CowFemale,
                 CarabaoMale = dto.CarabaoMale,
                 CarabaoFemale = dto.CarabaoFemale,
-                Signature = dto.Signature,
                 Year = dto.Year,
                 RecordedBy = dto.RecordedBy,
-                RecordedDate = DateTime.UtcNow
+                 RecordedDate = dto.RecordedDate 
             };
 
             _context.AnimalRaisingReports.Add(report);
@@ -65,7 +100,7 @@ namespace Nutrition_backend.Services
                 Id = report.Id,
                 Barangay = report.Barangay,
                 Purok = report.Purok,
-                TotalHouseholds = report.TotalHouseholds,
+                HouseholdName = report.HouseholdName,
                 ChickenMale = report.ChickenMale,
                 ChickenFemale = report.ChickenFemale,
                 PigMale = report.PigMale,
@@ -76,7 +111,6 @@ namespace Nutrition_backend.Services
                 CowFemale = report.CowFemale,
                 CarabaoMale = report.CarabaoMale,
                 CarabaoFemale = report.CarabaoFemale,
-                Signature = report.Signature,
                 Year = report.Year,
                 RecordedBy = report.RecordedBy,
                 RecordedDate = report.RecordedDate
@@ -95,7 +129,7 @@ namespace Nutrition_backend.Services
                 Id = r.Id,
                 Barangay = r.Barangay,
                 Purok = r.Purok,
-                TotalHouseholds = r.TotalHouseholds,
+                HouseholdName = r.HouseholdName,
                 ChickenMale = r.ChickenMale,
                 ChickenFemale = r.ChickenFemale,
                 PigMale = r.PigMale,
@@ -106,12 +140,67 @@ namespace Nutrition_backend.Services
                 CowFemale = r.CowFemale,
                 CarabaoMale = r.CarabaoMale,
                 CarabaoFemale = r.CarabaoFemale,
-                Signature = r.Signature,
                 Year = r.Year,
                 RecordedBy = r.RecordedBy,
                 RecordedDate = r.RecordedDate
             }).ToList();
         }
+
+        public async Task<AnimalRaisingResponseDto> UpdateAnimalRaisingAsync(int id, AnimalRaisingEntryDto dto)
+{
+    var report = await _context.AnimalRaisingReports.FindAsync(id);
+    if (report == null)
+        throw new KeyNotFoundException($"Record with ID {id} not found");
+
+    report.Barangay = dto.Barangay;
+    report.Purok = dto.Purok;
+    report.HouseholdName = dto.HouseholdName;
+    report.ChickenMale = dto.ChickenMale;
+    report.ChickenFemale = dto.ChickenFemale;
+    report.PigMale = dto.PigMale;
+    report.PigFemale = dto.PigFemale;
+    report.GoatMale = dto.GoatMale;
+    report.GoatFemale = dto.GoatFemale;
+    report.CowMale = dto.CowMale;
+    report.CowFemale = dto.CowFemale;
+    report.CarabaoMale = dto.CarabaoMale;
+    report.CarabaoFemale = dto.CarabaoFemale;
+    report.Year = dto.Year;
+    report.RecordedDate = dto.RecordedDate != DateTime.MinValue ? dto.RecordedDate : DateTime.UtcNow;
+    report.RecordedBy = dto.RecordedBy;
+
+    await _context.SaveChangesAsync();
+
+    return new AnimalRaisingResponseDto
+    {
+        Id = report.Id,
+        Barangay = report.Barangay,
+        Purok = report.Purok,
+        HouseholdName = report.HouseholdName,
+        ChickenMale = report.ChickenMale,
+        ChickenFemale = report.ChickenFemale,
+        PigMale = report.PigMale,
+        PigFemale = report.PigFemale,
+        GoatMale = report.GoatMale,
+        GoatFemale = report.GoatFemale,
+        CowMale = report.CowMale,
+        CowFemale = report.CowFemale,
+        CarabaoMale = report.CarabaoMale,
+        CarabaoFemale = report.CarabaoFemale,
+        Year = report.Year,
+        RecordedBy = report.RecordedBy,
+        RecordedDate = report.RecordedDate
+    };
+}
+
+public async Task<bool> DeleteAnimalRaisingAsync(int id)
+{
+    var report = await _context.AnimalRaisingReports.FindAsync(id);
+    if (report == null) return false;
+    _context.AnimalRaisingReports.Remove(report);
+    await _context.SaveChangesAsync();
+    return true;
+}
 
         public async Task<PotableWaterResponseDto> CreatePotableWaterAsync(PotableWaterEntryDto dto)
         {
@@ -119,7 +208,7 @@ namespace Nutrition_backend.Services
             {
                 Barangay = dto.Barangay,
                 Purok = dto.Purok,
-                TotalHouseholds = dto.TotalHouseholds,
+                HouseholdName = dto.HouseholdName,
                 Level1 = dto.Level1,
                 Level2 = dto.Level2,
                 Level3 = dto.Level3,
@@ -136,7 +225,7 @@ namespace Nutrition_backend.Services
                 Id = report.Id,
                 Barangay = report.Barangay,
                 Purok = report.Purok,
-                TotalHouseholds = report.TotalHouseholds,
+                HouseholdName = report.HouseholdName,
                 Level1 = report.Level1,
                 Level2 = report.Level2,
                 Level3 = report.Level3,
@@ -158,7 +247,7 @@ namespace Nutrition_backend.Services
                 Id = r.Id,
                 Barangay = r.Barangay,
                 Purok = r.Purok,
-                TotalHouseholds = r.TotalHouseholds,
+                HouseholdName = r.HouseholdName,
                 Level1 = r.Level1,
                 Level2 = r.Level2,
                 Level3 = r.Level3,
@@ -167,6 +256,48 @@ namespace Nutrition_backend.Services
                 RecordedDate = r.RecordedDate
             }).ToList();
         }
+
+        public async Task<PotableWaterResponseDto> UpdatePotableWaterAsync(int id, PotableWaterEntryDto dto)
+{
+    var report = await _context.PotableWaterReports.FindAsync(id);
+    if (report == null)
+        throw new KeyNotFoundException($"Record with ID {id} not found");
+
+    report.Barangay = dto.Barangay;
+    report.Purok = dto.Purok;
+    report.HouseholdName = dto.HouseholdName;
+    report.Level1 = dto.Level1;
+    report.Level2 = dto.Level2;
+    report.Level3 = dto.Level3;
+    report.Year = dto.Year;
+    report.RecordedDate = dto.RecordedDate != DateTime.MinValue ? dto.RecordedDate : DateTime.UtcNow;
+    report.RecordedBy = dto.RecordedBy;
+
+    await _context.SaveChangesAsync();
+
+    return new PotableWaterResponseDto
+    {
+        Id = report.Id,
+        Barangay = report.Barangay,
+        Purok = report.Purok,
+        HouseholdName = report.HouseholdName,
+        Level1 = report.Level1,
+        Level2 = report.Level2,
+        Level3 = report.Level3,
+        Year = report.Year,
+        RecordedBy = report.RecordedBy,
+        RecordedDate = report.RecordedDate
+    };
+}
+
+public async Task<bool> DeletePotableWaterAsync(int id)
+{
+    var report = await _context.PotableWaterReports.FindAsync(id);
+    if (report == null) return false;
+    _context.PotableWaterReports.Remove(report);
+    await _context.SaveChangesAsync();
+    return true;
+}
 
         public async Task<IodizedSaltResponseDto> CreateIodizedSaltAsync(IodizedSaltEntryDto dto)
         {
@@ -188,9 +319,6 @@ namespace Nutrition_backend.Services
                 OilUFC = dto.OilUFC,
                 OilJolly = dto.OilJolly,
                 OilOthers = dto.OilOthers,
-                PreparedBy = dto.PreparedBy,
-                NotedBy = dto.NotedBy,
-                ApprovedBy = dto.ApprovedBy,
                 RecordedDate = DateTime.UtcNow
             };
 
@@ -216,9 +344,6 @@ namespace Nutrition_backend.Services
                 OilUFC = report.OilUFC,
                 OilJolly = report.OilJolly,
                 OilOthers = report.OilOthers,
-                PreparedBy = report.PreparedBy,
-                NotedBy = report.NotedBy,
-                ApprovedBy = report.ApprovedBy,
                 RecordedDate = report.RecordedDate
             };
         }
@@ -249,12 +374,70 @@ namespace Nutrition_backend.Services
                 OilUFC = r.OilUFC,
                 OilJolly = r.OilJolly,
                 OilOthers = r.OilOthers,
-                PreparedBy = r.PreparedBy,
-                NotedBy = r.NotedBy,
-                ApprovedBy = r.ApprovedBy,
                 RecordedDate = r.RecordedDate
             }).ToList();
         }
+
+        public async Task<IodizedSaltResponseDto> UpdateIodizedSaltAsync(int id, IodizedSaltEntryDto dto)
+{
+    var report = await _context.IodizedSaltReports.FindAsync(id);
+    if (report == null)
+        throw new KeyNotFoundException($"Record with ID {id} not found");
+
+    report.Barangay = dto.Barangay;
+    report.Purok = dto.Purok;
+    report.StoreName = dto.StoreName;
+    report.FineSaltFidel = dto.FineSaltFidel;
+    report.FineSaltUFC = dto.FineSaltUFC;
+    report.FineSaltPacificBay = dto.FineSaltPacificBay;
+    report.FineSaltOthers = dto.FineSaltOthers;
+    report.RockSaltAtlantic = dto.RockSaltAtlantic;
+    report.RockSaltFidel = dto.RockSaltFidel;
+    report.RockSaltLasap = dto.RockSaltLasap;
+    report.RockSaltPagAsa = dto.RockSaltPagAsa;
+    report.RockSaltJay = dto.RockSaltJay;
+    report.RockSaltOthers = dto.RockSaltOthers;
+    report.OilUFC = dto.OilUFC;
+    report.OilJolly = dto.OilJolly;
+    report.OilOthers = dto.OilOthers;
+    report.RecordedDate = dto.RecordedDate != DateTime.MinValue ? dto.RecordedDate : DateTime.UtcNow;
+    report.RecordedBy = dto.RecordedBy;
+
+    await _context.SaveChangesAsync();
+
+    return new IodizedSaltResponseDto
+    {
+        Id = report.Id,
+        Barangay = report.Barangay,
+        Purok = report.Purok,
+        StoreName = report.StoreName,
+        FineSaltFidel = report.FineSaltFidel,
+        FineSaltUFC = report.FineSaltUFC,
+        FineSaltPacificBay = report.FineSaltPacificBay,
+        FineSaltOthers = report.FineSaltOthers,
+        RockSaltAtlantic = report.RockSaltAtlantic,
+        RockSaltFidel = report.RockSaltFidel,
+        RockSaltLasap = report.RockSaltLasap,
+        RockSaltPagAsa = report.RockSaltPagAsa,
+        RockSaltJay = report.RockSaltJay,
+        RockSaltOthers = report.RockSaltOthers,
+        OilUFC = report.OilUFC,
+        OilJolly = report.OilJolly,
+        OilOthers = report.OilOthers,
+        RecordedBy = report.RecordedBy,
+        RecordedDate = report.RecordedDate
+    };
+}
+
+public async Task<bool> DeleteIodizedSaltAsync(int id)
+{
+    var report = await _context.IodizedSaltReports.FindAsync(id);
+    if (report == null) return false;
+    _context.IodizedSaltReports.Remove(report);
+    await _context.SaveChangesAsync();
+    return true;
+}
+
 
         public async Task<CRResponseDto> CreateCRAsync(CREntryDto dto)
         {
@@ -262,12 +445,12 @@ namespace Nutrition_backend.Services
             {
                 Barangay = dto.Barangay,
                 Purok = dto.Purok,
-                TotalHouseholds = dto.TotalHouseholds,
+                HouseholdName = dto.HouseholdName,
                 WithCR = dto.WithCR,
                 WithoutCR = dto.WithoutCR,
                 Year = dto.Year,
                 RecordedBy = dto.RecordedBy,
-                RecordedDate = DateTime.UtcNow
+                RecordedDate = dto.RecordedDate != DateTime.MinValue ? dto.RecordedDate : DateTime.UtcNow
             };
 
             _context.CRReports.Add(report);
@@ -278,7 +461,7 @@ namespace Nutrition_backend.Services
                 Id = report.Id,
                 Barangay = report.Barangay,
                 Purok = report.Purok,
-                TotalHouseholds = report.TotalHouseholds,
+                HouseholdName = report.HouseholdName,
                 WithCR = report.WithCR,
                 WithoutCR = report.WithoutCR,
                 Year = report.Year,
@@ -299,7 +482,7 @@ namespace Nutrition_backend.Services
                 Id = r.Id,
                 Barangay = r.Barangay,
                 Purok = r.Purok,
-                TotalHouseholds = r.TotalHouseholds,
+                HouseholdName = r.HouseholdName,
                 WithCR = r.WithCR,
                 WithoutCR = r.WithoutCR,
                 Year = r.Year,
@@ -308,15 +491,54 @@ namespace Nutrition_backend.Services
             }).ToList();
         }
 
+        public async Task<CRResponseDto> UpdateCRAsync(int id, CREntryDto dto)
+{
+    var report = await _context.CRReports.FindAsync(id);
+    if (report == null)
+        throw new KeyNotFoundException($"Record with ID {id} not found");
+
+    report.Barangay = dto.Barangay;
+    report.Purok = dto.Purok;
+    report.HouseholdName = dto.HouseholdName;
+    report.WithCR = dto.WithCR;
+    report.WithoutCR = dto.WithoutCR;
+    report.Year = dto.Year;
+    report.RecordedDate = dto.RecordedDate != DateTime.MinValue ? dto.RecordedDate : DateTime.UtcNow;
+    report.RecordedBy = dto.RecordedBy;
+
+    await _context.SaveChangesAsync();
+
+    return new CRResponseDto
+    {
+        Id = report.Id,
+        Barangay = report.Barangay,
+        Purok = report.Purok,
+        HouseholdName = report.HouseholdName,
+        WithCR = report.WithCR,
+        WithoutCR = report.WithoutCR,
+        Year = report.Year,
+        RecordedBy = report.RecordedBy,
+        RecordedDate = report.RecordedDate
+    };
+}
+
+public async Task<bool> DeleteCRAsync(int id)
+{
+    var report = await _context.CRReports.FindAsync(id);
+    if (report == null) return false;
+    _context.CRReports.Remove(report);
+    await _context.SaveChangesAsync();
+    return true;
+}
+
         public async Task<BackyardGardeningResponseDto> CreateBackyardGardeningAsync(BackyardGardeningEntryDto dto)
         {
             var report = new BackyardGardeningReport
             {
                 Barangay = dto.Barangay,
                 Purok = dto.Purok,
-                TotalHouseholds = dto.TotalHouseholds,
-                WithGarden = dto.WithGarden,
-                WithoutGarden = dto.WithoutGarden,
+                HouseholdName = dto.HouseholdName,
+                HasGarden = dto.HasGarden,
                 Year = dto.Year,
                 RecordedBy = dto.RecordedBy,
                 RecordedDate = DateTime.UtcNow
@@ -330,9 +552,8 @@ namespace Nutrition_backend.Services
                 Id = report.Id,
                 Barangay = report.Barangay,
                 Purok = report.Purok,
-                TotalHouseholds = report.TotalHouseholds,
-                WithGarden = report.WithGarden,
-                WithoutGarden = report.WithoutGarden,
+                HouseholdName = report.HouseholdName,
+                HasGarden = report.HasGarden,
                 Year = report.Year,
                 RecordedBy = report.RecordedBy,
                 RecordedDate = report.RecordedDate
@@ -351,45 +572,86 @@ namespace Nutrition_backend.Services
                 Id = r.Id,
                 Barangay = r.Barangay,
                 Purok = r.Purok,
-                TotalHouseholds = r.TotalHouseholds,
-                WithGarden = r.WithGarden,
-                WithoutGarden = r.WithoutGarden,
+                HouseholdName = r.HouseholdName,
+                HasGarden = r.HasGarden,
                 Year = r.Year,
                 RecordedBy = r.RecordedBy,
                 RecordedDate = r.RecordedDate
             }).ToList();
         }
 
+        public async Task<BackyardGardeningResponseDto> UpdateBackyardGardeningAsync(int id, BackyardGardeningEntryDto dto)
+{
+    var report = await _context.BackyardGardeningReports.FindAsync(id);
+    if (report == null)
+        throw new KeyNotFoundException($"Record with ID {id} not found");
+
+    report.Barangay = dto.Barangay;
+    report.Purok = dto.Purok;
+    report.HouseholdName = dto.HouseholdName;
+    report.HasGarden = dto.HasGarden;
+    report.Year = dto.Year;
+    report.RecordedDate = dto.RecordedDate != DateTime.MinValue ? dto.RecordedDate : DateTime.UtcNow;
+    report.RecordedBy = dto.RecordedBy;
+
+    await _context.SaveChangesAsync();
+
+    return new BackyardGardeningResponseDto
+    {
+        Id = report.Id,
+        Barangay = report.Barangay,
+        Purok = report.Purok,
+        HouseholdName = report.HouseholdName,
+        HasGarden = report.HasGarden,
+        Year = report.Year,
+        RecordedBy = report.RecordedBy,
+        RecordedDate = report.RecordedDate
+    };
+}
+
+public async Task<bool> DeleteBackyardGardeningAsync(int id)
+{
+    var report = await _context.BackyardGardeningReports.FindAsync(id);
+    if (report == null) return false;
+    _context.BackyardGardeningReports.Remove(report);
+    await _context.SaveChangesAsync();
+    return true;
+}
+
         public async Task<PregnantWomenResponseDto> CreatePregnantWomenAsync(PregnantWomenEntryDto dto)
-        {
-            var report = new PregnantWomenReport
-            {
-                Barangay = dto.Barangay,
-                Purok = dto.Purok,
-                HighBMI = dto.HighBMI,
-                LowBMI = dto.LowBMI,
-                NormalBMI = dto.NormalBMI,
-                Year = dto.Year,
-                RecordedBy = dto.RecordedBy,
-                RecordedDate = DateTime.UtcNow
-            };
+{
+    var report = new PregnantWomenReport
+    {
+        Barangay = dto.Barangay,
+        Purok = dto.Purok,
+        WomanName = dto.WomanName,
+        Weight = dto.Weight,
+        Height = dto.Height,
+        BMI = dto.BMI,
+        BMICategory = dto.BMICategory,
+        Year = dto.Year,
+        RecordedBy = dto.RecordedBy,
+        RecordedDate = dto.RecordedDate != DateTime.MinValue ? dto.RecordedDate : DateTime.UtcNow
+    };
 
-            _context.PregnantWomenReports.Add(report);
-            await _context.SaveChangesAsync();
+    _context.PregnantWomenReports.Add(report);
+    await _context.SaveChangesAsync();
 
-            return new PregnantWomenResponseDto
-            {
-                Id = report.Id,
-                Barangay = report.Barangay,
-                Purok = report.Purok,
-                HighBMI = report.HighBMI,
-                LowBMI = report.LowBMI,
-                NormalBMI = report.NormalBMI,
-                Year = report.Year,
-                RecordedBy = report.RecordedBy,
-                RecordedDate = report.RecordedDate
-            };
-        }
+    return new PregnantWomenResponseDto
+    {
+        Id = report.Id,
+        Barangay = report.Barangay,
+        Purok = report.Purok,
+        WomanName = report.WomanName,
+        Weight = report.Weight,
+        Height = report.Height,
+        BMI = report.BMI,
+        BMICategory = report.BMICategory,
+        Year = report.Year,
+        RecordedBy = report.RecordedBy,
+        RecordedDate = report.RecordedDate
+    };
+}
 
         public async Task<List<PregnantWomenResponseDto>> GetPregnantWomenAsync(string barangay, int year)
         {
@@ -403,14 +665,61 @@ namespace Nutrition_backend.Services
                 Id = r.Id,
                 Barangay = r.Barangay,
                 Purok = r.Purok,
-                HighBMI = r.HighBMI,
-                LowBMI = r.LowBMI,
-                NormalBMI = r.NormalBMI,
+                WomanName = r.WomanName,
+                Weight = r.Weight,
+                Height = r.Height,
+                BMI = r.BMI,
+                BMICategory = r.BMICategory,
                 Year = r.Year,
                 RecordedBy = r.RecordedBy,
                 RecordedDate = r.RecordedDate
             }).ToList();
         }
+
+
+        public async Task<PregnantWomenResponseDto> UpdatePregnantWomenAsync(int id, PregnantWomenEntryDto dto)
+{
+    var report = await _context.PregnantWomenReports.FindAsync(id);
+    if (report == null)
+        throw new KeyNotFoundException($"Record with ID {id} not found");
+
+    report.Barangay = dto.Barangay;
+    report.Purok = dto.Purok;
+    report.WomanName = dto.WomanName;
+    report.Weight = dto.Weight;
+    report.Height = dto.Height;
+    report.BMI = dto.BMI;
+    report.BMICategory = dto.BMICategory;
+    report.Year = dto.Year;
+    report.RecordedDate = dto.RecordedDate != DateTime.MinValue ? dto.RecordedDate : DateTime.UtcNow;
+    report.RecordedBy = dto.RecordedBy;
+
+    await _context.SaveChangesAsync();
+
+    return new PregnantWomenResponseDto
+    {
+        Id = report.Id,
+        Barangay = report.Barangay,
+        Purok = report.Purok,
+        WomanName = report.WomanName,
+        Weight = report.Weight,
+        Height = report.Height,
+        BMI = report.BMI,
+        BMICategory = report.BMICategory,
+        Year = report.Year,
+        RecordedBy = report.RecordedBy,
+        RecordedDate = report.RecordedDate
+    };
+}
+
+public async Task<bool> DeletePregnantWomenAsync(int id)
+{
+    var report = await _context.PregnantWomenReports.FindAsync(id);
+    if (report == null) return false;
+    _context.PregnantWomenReports.Remove(report);
+    await _context.SaveChangesAsync();
+    return true;
+}
 
         public async Task<VegetableSeedResponseDto> CreateVegetableSeedAsync(VegetableSeedEntryDto dto)
         {
@@ -418,15 +727,8 @@ namespace Nutrition_backend.Services
             {
                 Barangay = dto.Barangay,
                 Purok = dto.Purok,
-                TotalHouseholds = dto.TotalHouseholds,
-                PoorFamiliesGivenSeeds = dto.PoorFamiliesGivenSeeds,
-                SeedType1 = dto.SeedType1,
-                SeedCount1 = dto.SeedCount1,
-                SeedType2 = dto.SeedType2,
-                SeedCount2 = dto.SeedCount2,
-                SeedType3 = dto.SeedType3,
-                SeedCount3 = dto.SeedCount3,
-                SubTotal = dto.SubTotal,
+                HouseholdName = dto.HouseholdName,
+                SeedTypes = dto.SeedTypes,
                 Year = dto.Year,
                 RecordedBy = dto.RecordedBy,
                 RecordedDate = DateTime.UtcNow
@@ -440,15 +742,8 @@ namespace Nutrition_backend.Services
                 Id = report.Id,
                 Barangay = report.Barangay,
                 Purok = report.Purok,
-                TotalHouseholds = report.TotalHouseholds,
-                PoorFamiliesGivenSeeds = report.PoorFamiliesGivenSeeds,
-                SeedType1 = report.SeedType1,
-                SeedCount1 = report.SeedCount1,
-                SeedType2 = report.SeedType2,
-                SeedCount2 = report.SeedCount2,
-                SeedType3 = report.SeedType3,
-                SeedCount3 = report.SeedCount3,
-                SubTotal = report.SubTotal,
+                HouseholdName = report.HouseholdName,
+        SeedTypes = report.SeedTypes,
                 Year = report.Year,
                 RecordedBy = report.RecordedBy,
                 RecordedDate = report.RecordedDate
@@ -467,29 +762,61 @@ namespace Nutrition_backend.Services
                 Id = r.Id,
                 Barangay = r.Barangay,
                 Purok = r.Purok,
-                TotalHouseholds = r.TotalHouseholds,
-                PoorFamiliesGivenSeeds = r.PoorFamiliesGivenSeeds,
-                SeedType1 = r.SeedType1,
-                SeedCount1 = r.SeedCount1,
-                SeedType2 = r.SeedType2,
-                SeedCount2 = r.SeedCount2,
-                SeedType3 = r.SeedType3,
-                SeedCount3 = r.SeedCount3,
-                SubTotal = r.SubTotal,
+                HouseholdName = r.HouseholdName,
+                SeedTypes = r.SeedTypes,
                 Year = r.Year,
                 RecordedBy = r.RecordedBy,
                 RecordedDate = r.RecordedDate
             }).ToList();
         }
 
+        public async Task<VegetableSeedResponseDto> UpdateVegetableSeedAsync(int id, VegetableSeedEntryDto dto)
+{
+    var report = await _context.VegetableSeedReports.FindAsync(id);
+    if (report == null)
+        throw new KeyNotFoundException($"Record with ID {id} not found");
+
+    report.Barangay = dto.Barangay;
+    report.Purok = dto.Purok;
+    report.HouseholdName = dto.HouseholdName;
+    report.SeedTypes = dto.SeedTypes;
+    report.Year = dto.Year;
+    report.RecordedDate = dto.RecordedDate != DateTime.MinValue ? dto.RecordedDate : DateTime.UtcNow;
+    report.RecordedBy = dto.RecordedBy;
+
+    await _context.SaveChangesAsync();
+
+    return new VegetableSeedResponseDto
+    {
+        Id = report.Id,
+        Barangay = report.Barangay,
+        Purok = report.Purok,
+        HouseholdName = report.HouseholdName,
+        SeedTypes = report.SeedTypes,
+        Year = report.Year,
+        RecordedBy = report.RecordedBy,
+        RecordedDate = report.RecordedDate
+    };
+}
+
+
+        public async Task<bool> DeleteVegetableSeedAsync(int id)
+        {
+            var report = await _context.VegetableSeedReports.FindAsync(id);
+            if (report == null)
+                return false;
+
+            _context.VegetableSeedReports.Remove(report);
+            await _context.SaveChangesAsync();
+            return true;
+        }
         public async Task<AnimalDispersalResponseDto> CreateAnimalDispersalAsync(AnimalDispersalEntryDto dto)
         {
             var report = new AnimalDispersalReport
             {
                 Barangay = dto.Barangay,
                 Purok = dto.Purok,
-                TotalHouseholds = dto.TotalHouseholds,
-                HouseholdsReceived = dto.HouseholdsReceived,
+                HouseholdName = dto.HouseholdName,
                 ChickenMale = dto.ChickenMale,
                 ChickenFemale = dto.ChickenFemale,
                 PigMale = dto.PigMale,
@@ -500,7 +827,6 @@ namespace Nutrition_backend.Services
                 CowFemale = dto.CowFemale,
                 CarabaoMale = dto.CarabaoMale,
                 CarabaoFemale = dto.CarabaoFemale,
-                Signature = dto.Signature,
                 Year = dto.Year,
                 RecordedBy = dto.RecordedBy,
                 RecordedDate = DateTime.UtcNow
@@ -514,8 +840,7 @@ namespace Nutrition_backend.Services
                 Id = report.Id,
                 Barangay = report.Barangay,
                 Purok = report.Purok,
-                TotalHouseholds = report.TotalHouseholds,
-                HouseholdsReceived = report.HouseholdsReceived,
+                HouseholdName = report.HouseholdName,
                 ChickenMale = report.ChickenMale,
                 ChickenFemale = report.ChickenFemale,
                 PigMale = report.PigMale,
@@ -526,7 +851,6 @@ namespace Nutrition_backend.Services
                 CowFemale = report.CowFemale,
                 CarabaoMale = report.CarabaoMale,
                 CarabaoFemale = report.CarabaoFemale,
-                Signature = report.Signature,
                 Year = report.Year,
                 RecordedBy = report.RecordedBy,
                 RecordedDate = report.RecordedDate
@@ -545,8 +869,7 @@ namespace Nutrition_backend.Services
                 Id = r.Id,
                 Barangay = r.Barangay,
                 Purok = r.Purok,
-                TotalHouseholds = r.TotalHouseholds,
-                HouseholdsReceived = r.HouseholdsReceived,
+                HouseholdName = r.HouseholdName,
                 ChickenMale = r.ChickenMale,
                 ChickenFemale = r.ChickenFemale,
                 PigMale = r.PigMale,
@@ -557,11 +880,66 @@ namespace Nutrition_backend.Services
                 CowFemale = r.CowFemale,
                 CarabaoMale = r.CarabaoMale,
                 CarabaoFemale = r.CarabaoFemale,
-                Signature = r.Signature,
                 Year = r.Year,
                 RecordedBy = r.RecordedBy,
                 RecordedDate = r.RecordedDate
             }).ToList();
         }
+
+        public async Task<AnimalDispersalResponseDto> UpdateAnimalDispersalAsync(int id, AnimalDispersalEntryDto dto)
+{
+    var report = await _context.AnimalDispersalReports.FindAsync(id);
+    if (report == null)
+        throw new KeyNotFoundException($"Record with ID {id} not found");
+
+    report.Barangay = dto.Barangay;
+    report.Purok = dto.Purok;
+    report.HouseholdName = dto.HouseholdName;
+    report.ChickenMale = dto.ChickenMale;
+    report.ChickenFemale = dto.ChickenFemale;
+    report.PigMale = dto.PigMale;
+    report.PigFemale = dto.PigFemale;
+    report.GoatMale = dto.GoatMale;
+    report.GoatFemale = dto.GoatFemale;
+    report.CowMale = dto.CowMale;
+    report.CowFemale = dto.CowFemale;
+    report.CarabaoMale = dto.CarabaoMale;
+    report.CarabaoFemale = dto.CarabaoFemale;
+    report.Year = dto.Year;
+    report.RecordedDate = dto.RecordedDate != DateTime.MinValue ? dto.RecordedDate : DateTime.UtcNow;
+    report.RecordedBy = dto.RecordedBy;
+
+    await _context.SaveChangesAsync();
+
+    return new AnimalDispersalResponseDto
+    {
+        Id = report.Id,
+        Barangay = report.Barangay,
+        Purok = report.Purok,
+        HouseholdName = report.HouseholdName,
+        ChickenMale = report.ChickenMale,
+        ChickenFemale = report.ChickenFemale,
+        PigMale = report.PigMale,
+        PigFemale = report.PigFemale,
+        GoatMale = report.GoatMale,
+        GoatFemale = report.GoatFemale,
+        CowMale = report.CowMale,
+        CowFemale = report.CowFemale,
+        CarabaoMale = report.CarabaoMale,
+        CarabaoFemale = report.CarabaoFemale,
+        Year = report.Year,
+        RecordedBy = report.RecordedBy,
+        RecordedDate = report.RecordedDate
+    };
+}
+
+public async Task<bool> DeleteAnimalDispersalAsync(int id)
+{
+    var report = await _context.AnimalDispersalReports.FindAsync(id);
+    if (report == null) return false;
+    _context.AnimalDispersalReports.Remove(report);
+    await _context.SaveChangesAsync();
+    return true;
+}
     }
 }

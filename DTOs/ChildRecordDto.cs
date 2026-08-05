@@ -33,5 +33,15 @@ namespace Nutrition_backend.DTOs
         [Required]
         [MaxLength(50)]
         public string NutritionalStatus { get; set; } = string.Empty;
+        [Required]
+        public DateTime RecordedDate { get; set; } = DateTime.UtcNow;
+
     }
+    public class CheckDuplicateDto
+{
+    public string FullName { get; set; } = String.Empty;
+    public string Barangay { get; set; } = String.Empty;
+    public int Purok { get; set; }
+    public int? ExcludeId { get; set; }
+}
 }

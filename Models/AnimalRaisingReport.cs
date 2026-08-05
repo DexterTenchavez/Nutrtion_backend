@@ -15,7 +15,7 @@ namespace Nutrition_backend.Models  // ← Same namespace as other models
         public int Purok { get; set; }
         
         [Required]
-        public int TotalHouseholds { get; set; }
+        public string HouseholdName { get; set; } = string.Empty;
         
         // Chicken
         public int ChickenMale { get; set; }
@@ -37,7 +37,6 @@ namespace Nutrition_backend.Models  // ← Same namespace as other models
         public int CarabaoMale { get; set; }
         public int CarabaoFemale { get; set; }
         
-        public string? Signature { get; set; }
         
         public int Year { get; set; }
         public DateTime RecordedDate { get; set; } = DateTime.UtcNow;

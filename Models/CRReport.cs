@@ -15,10 +15,10 @@ namespace Nutrition_backend.Models
         public int Purok { get; set; }
         
         [Required]
-        public int TotalHouseholds { get; set; }
+        public string HouseholdName { get; set; } = string.Empty;
         
-        public int WithCR { get; set; }
-        public int WithoutCR { get; set; }
+        public bool WithCR { get; set; }
+        public bool WithoutCR { get; set; }
         
         public int Year { get; set; }
         public DateTime RecordedDate { get; set; } = DateTime.UtcNow;

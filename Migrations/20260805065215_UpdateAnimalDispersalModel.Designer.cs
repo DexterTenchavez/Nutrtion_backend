@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Nutrition_backend.Data;
 
@@ -11,9 +12,11 @@ using Nutrition_backend.Data;
 namespace Nutrition_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260805065215_UpdateAnimalDispersalModel")]
+    partial class UpdateAnimalDispersalModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -368,9 +371,6 @@ namespace Nutrition_backend.Migrations
                     b.Property<int>("Purok")
                         .HasColumnType("int");
 
-                    b.Property<string>("RecordedBy")
-                        .HasColumnType("longtext");
-
                     b.Property<DateTime>("RecordedDate")
                         .HasColumnType("datetime(6)");
 
@@ -551,7 +551,7 @@ namespace Nutrition_backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2026, 8, 5, 7, 32, 41, 289, DateTimeKind.Utc).AddTicks(6141),
+                            CreatedAt = new DateTime(2026, 8, 5, 6, 52, 14, 605, DateTimeKind.Utc).AddTicks(4820),
                             Email = "dextertenchavez@gmail.com",
                             IsActive = true,
                             PasswordHash = "$2a$12$bpNqnsk2pO8EmR7mdumID.oNto8kb6O4xdmyQWf.nZ3ZVZhJnmOmO",

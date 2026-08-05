@@ -14,12 +14,8 @@ namespace Nutrition_backend.Models
         [Required]
         public int Purok { get; set; }
         
-        [Required]
-        public int TotalHouseholds { get; set; }
-        
-        public int HouseholdsReceived { get; set; }
-        
-        // Chicken
+       [Required]
+    public string HouseholdName { get; set; } = string.Empty;
         public int ChickenMale { get; set; }
         public int ChickenFemale { get; set; }
         
@@ -38,8 +34,6 @@ namespace Nutrition_backend.Models
         // Carabao
         public int CarabaoMale { get; set; }
         public int CarabaoFemale { get; set; }
-        
-        public string? Signature { get; set; }
         
         public int Year { get; set; }
         public DateTime RecordedDate { get; set; } = DateTime.UtcNow;

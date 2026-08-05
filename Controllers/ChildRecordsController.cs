@@ -47,6 +47,25 @@ namespace Nutrition_backend.Controllers
             return userId;
         }
 
+        [HttpPost("check-duplicate")]
+public async Task<IActionResult> CheckDuplicate([FromBody] CheckDuplicateDto dto)
+{
+    try
+    {
+        var exists = await _childRecordService.CheckDuplicateAsync(
+            dto.FullName, 
+            dto.Barangay, 
+            dto.Purok, 
+            dto.ExcludeId
+        );
+        return Ok(new { exists });
+    }
+    catch (Exception ex)
+    {
+        return BadRequest(new { message = ex.Message });
+    }
+}
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ChildRecordDto dto)
         {

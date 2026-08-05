@@ -37,8 +37,6 @@ namespace Nutrition_backend.Models
         public string? OilOthers { get; set; }
         
         public DateTime RecordedDate { get; set; } = DateTime.UtcNow;
-        public string? PreparedBy { get; set; }
-        public string? NotedBy { get; set; }
-        public string? ApprovedBy { get; set; }
+        public string? RecordedBy { get; set; }
     }
 }

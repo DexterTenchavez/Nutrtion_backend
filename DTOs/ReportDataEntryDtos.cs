@@ -12,7 +12,7 @@ namespace Nutrition_backend.DTOs
         public int Purok { get; set; }
 
         [Required]
-        public int TotalHouseholds { get; set; }
+        public string HouseholdName { get; set; } = string.Empty;
 
         public int ChickenMale { get; set; }
         public int ChickenFemale { get; set; }
@@ -24,8 +24,9 @@ namespace Nutrition_backend.DTOs
         public int CowFemale { get; set; }
         public int CarabaoMale { get; set; }
         public int CarabaoFemale { get; set; }
-        public string? Signature { get; set; }
+        
         public int Year { get; set; }
+        public DateTime RecordedDate { get; set; }
         public string? RecordedBy { get; set; }
     }
 
@@ -39,12 +40,13 @@ namespace Nutrition_backend.DTOs
         public int Purok { get; set; }
 
         [Required]
-        public int TotalHouseholds { get; set; }
+    public string HouseholdName { get; set; } = string.Empty;
 
         public int Level1 { get; set; }
         public int Level2 { get; set; }
         public int Level3 { get; set; }
         public int Year { get; set; }
+        public DateTime RecordedDate { get; set; }
         public string? RecordedBy { get; set; }
     }
 
@@ -73,9 +75,8 @@ namespace Nutrition_backend.DTOs
         public bool OilUFC { get; set; }
         public bool OilJolly { get; set; }
         public string? OilOthers { get; set; }
-        public string? PreparedBy { get; set; }
-        public string? NotedBy { get; set; }
-        public string? ApprovedBy { get; set; }
+         public DateTime RecordedDate { get; set; } // Added
+    public string? RecordedBy { get; set; }
     }
 
     public class CREntryDto
@@ -87,12 +88,13 @@ namespace Nutrition_backend.DTOs
         [Required]
         public int Purok { get; set; }
 
-        [Required]
-        public int TotalHouseholds { get; set; }
+         [Required]
+        public string HouseholdName { get; set; } = string.Empty;
 
-        public int WithCR { get; set; }
-        public int WithoutCR { get; set; }
+        public bool WithCR { get; set; } // Changed from int to bool
+    public bool WithoutCR { get; set; }
         public int Year { get; set; }
+        public DateTime RecordedDate { get; set; }
         public string? RecordedBy { get; set; }
     }
 
@@ -105,12 +107,12 @@ namespace Nutrition_backend.DTOs
         [Required]
         public int Purok { get; set; }
 
-        [Required]
-        public int TotalHouseholds { get; set; }
+       [Required]
+       public string HouseholdName { get; set; } = string.Empty;
 
-        public int WithGarden { get; set; }
-        public int WithoutGarden { get; set; }
+       public bool HasGarden { get; set; }
         public int Year { get; set; }
+        public DateTime RecordedDate { get; set; }
         public string? RecordedBy { get; set; }
     }
 
@@ -122,11 +124,15 @@ namespace Nutrition_backend.DTOs
 
         [Required]
         public int Purok { get; set; }
+        [Required]
+     public string WomanName { get; set; } = string.Empty;
 
-        public int HighBMI { get; set; }
-        public int LowBMI { get; set; }
-        public int NormalBMI { get; set; }
-        public int Year { get; set; }
+        public decimal Weight { get; set; }
+    public decimal Height { get; set; }
+    public decimal BMI { get; set; }
+    public string? BMICategory { get; set; }
+    public int Year { get; set; }
+    public DateTime RecordedDate { get; set; }
         public string? RecordedBy { get; set; }
     }
 
@@ -140,17 +146,11 @@ namespace Nutrition_backend.DTOs
         public int Purok { get; set; }
 
         [Required]
-        public int TotalHouseholds { get; set; }
+    public string HouseholdName { get; set; } = string.Empty;
 
-        public int PoorFamiliesGivenSeeds { get; set; }
-        public string? SeedType1 { get; set; }
-        public int SeedCount1 { get; set; }
-        public string? SeedType2 { get; set; }
-        public int SeedCount2 { get; set; }
-        public string? SeedType3 { get; set; }
-        public int SeedCount3 { get; set; }
-        public int SubTotal { get; set; }
+    public string? SeedTypes { get; set; }
         public int Year { get; set; }
+        public DateTime RecordedDate { get; set; }
         public string? RecordedBy { get; set; }
     }
 
@@ -164,9 +164,7 @@ namespace Nutrition_backend.DTOs
         public int Purok { get; set; }
 
         [Required]
-        public int TotalHouseholds { get; set; }
-
-        public int HouseholdsReceived { get; set; }
+    public string HouseholdName { get; set; } = string.Empty;
         public int ChickenMale { get; set; }
         public int ChickenFemale { get; set; }
         public int PigMale { get; set; }
@@ -177,7 +175,7 @@ namespace Nutrition_backend.DTOs
         public int CowFemale { get; set; }
         public int CarabaoMale { get; set; }
         public int CarabaoFemale { get; set; }
-        public string? Signature { get; set; }
+        public DateTime RecordedDate { get; set; }
         public int Year { get; set; }
         public string? RecordedBy { get; set; }
     }
@@ -187,7 +185,7 @@ namespace Nutrition_backend.DTOs
         public int Id { get; set; }
         public string Barangay { get; set; } = string.Empty;
         public int Purok { get; set; }
-        public int TotalHouseholds { get; set; }
+        public string HouseholdName { get; set; } = string.Empty;
         public int ChickenMale { get; set; }
         public int ChickenFemale { get; set; }
         public int PigMale { get; set; }
@@ -198,7 +196,6 @@ namespace Nutrition_backend.DTOs
         public int CowFemale { get; set; }
         public int CarabaoMale { get; set; }
         public int CarabaoFemale { get; set; }
-        public string? Signature { get; set; }
         public int Year { get; set; }
         public string? RecordedBy { get; set; }
         public DateTime RecordedDate { get; set; }
@@ -209,7 +206,7 @@ namespace Nutrition_backend.DTOs
         public int Id { get; set; }
         public string Barangay { get; set; } = string.Empty;
         public int Purok { get; set; }
-        public int TotalHouseholds { get; set; }
+         public string HouseholdName { get; set; } = string.Empty;
         public int Level1 { get; set; }
         public int Level2 { get; set; }
         public int Level3 { get; set; }
@@ -237,10 +234,8 @@ namespace Nutrition_backend.DTOs
         public bool OilUFC { get; set; }
         public bool OilJolly { get; set; }
         public string? OilOthers { get; set; }
-        public string? PreparedBy { get; set; }
-        public string? NotedBy { get; set; }
-        public string? ApprovedBy { get; set; }
         public DateTime RecordedDate { get; set; }
+        public string? RecordedBy { get; set; }
     }
 
     public class CRResponseDto
@@ -248,9 +243,9 @@ namespace Nutrition_backend.DTOs
         public int Id { get; set; }
         public string Barangay { get; set; } = string.Empty;
         public int Purok { get; set; }
-        public int TotalHouseholds { get; set; }
-        public int WithCR { get; set; }
-        public int WithoutCR { get; set; }
+        public string HouseholdName { get; set; } = string.Empty;
+        public bool WithCR { get; set; }
+        public bool WithoutCR { get; set; }
         public int Year { get; set; }
         public string? RecordedBy { get; set; }
         public DateTime RecordedDate { get; set; }
@@ -261,41 +256,35 @@ namespace Nutrition_backend.DTOs
         public int Id { get; set; }
         public string Barangay { get; set; } = string.Empty;
         public int Purok { get; set; }
-        public int TotalHouseholds { get; set; }
-        public int WithGarden { get; set; }
-        public int WithoutGarden { get; set; }
+        public string HouseholdName { get; set; } = string.Empty;
+        public bool HasGarden { get; set; }
         public int Year { get; set; }
         public string? RecordedBy { get; set; }
         public DateTime RecordedDate { get; set; }
     }
 
     public class PregnantWomenResponseDto
-    {
-        public int Id { get; set; }
-        public string Barangay { get; set; } = string.Empty;
-        public int Purok { get; set; }
-        public int HighBMI { get; set; }
-        public int LowBMI { get; set; }
-        public int NormalBMI { get; set; }
-        public int Year { get; set; }
-        public string? RecordedBy { get; set; }
-        public DateTime RecordedDate { get; set; }
-    }
+{
+    public int Id { get; set; }
+    public string Barangay { get; set; } = string.Empty;
+    public int Purok { get; set; }
+    public string WomanName { get; set; } = string.Empty;
+    public decimal Weight { get; set; }
+    public decimal Height { get; set; }
+    public decimal BMI { get; set; }
+    public string? BMICategory { get; set; }
+    public int Year { get; set; }
+    public string? RecordedBy { get; set; }
+    public DateTime RecordedDate { get; set; }
+}
 
     public class VegetableSeedResponseDto
     {
         public int Id { get; set; }
         public string Barangay { get; set; } = string.Empty;
         public int Purok { get; set; }
-        public int TotalHouseholds { get; set; }
-        public int PoorFamiliesGivenSeeds { get; set; }
-        public string? SeedType1 { get; set; }
-        public int SeedCount1 { get; set; }
-        public string? SeedType2 { get; set; }
-        public int SeedCount2 { get; set; }
-        public string? SeedType3 { get; set; }
-        public int SeedCount3 { get; set; }
-        public int SubTotal { get; set; }
+        public string HouseholdName { get; set; } = string.Empty;
+    public string? SeedTypes { get; set; }
         public int Year { get; set; }
         public string? RecordedBy { get; set; }
         public DateTime RecordedDate { get; set; }
@@ -306,8 +295,7 @@ namespace Nutrition_backend.DTOs
         public int Id { get; set; }
         public string Barangay { get; set; } = string.Empty;
         public int Purok { get; set; }
-        public int TotalHouseholds { get; set; }
-        public int HouseholdsReceived { get; set; }
+        public string HouseholdName { get; set; } = string.Empty;
         public int ChickenMale { get; set; }
         public int ChickenFemale { get; set; }
         public int PigMale { get; set; }
@@ -318,7 +306,6 @@ namespace Nutrition_backend.DTOs
         public int CowFemale { get; set; }
         public int CarabaoMale { get; set; }
         public int CarabaoFemale { get; set; }
-        public string? Signature { get; set; }
         public int Year { get; set; }
         public string? RecordedBy { get; set; }
         public DateTime RecordedDate { get; set; }

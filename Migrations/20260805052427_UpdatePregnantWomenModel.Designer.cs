@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Nutrition_backend.Data;
 
@@ -11,9 +12,11 @@ using Nutrition_backend.Data;
 namespace Nutrition_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260805052427_UpdatePregnantWomenModel")]
+    partial class UpdatePregnantWomenModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,10 +62,8 @@ namespace Nutrition_backend.Migrations
                     b.Property<int>("GoatMale")
                         .HasColumnType("int");
 
-                    b.Property<string>("HouseholdName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                    b.Property<int>("HouseholdsReceived")
+                        .HasColumnType("int");
 
                     b.Property<int>("PigFemale")
                         .HasColumnType("int");
@@ -80,10 +81,20 @@ namespace Nutrition_backend.Migrations
                     b.Property<DateTime>("RecordedDate")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("Signature")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("TotalHouseholds")
+                        .HasColumnType("int");
+
                     b.Property<int>("Year")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Barangay", "Purok", "Year")
+                        .IsUnique()
+                        .HasDatabaseName("IX_AnimalDispersal_BarangayPurokYear");
 
                     b.ToTable("AnimalDispersalReports");
                 });
@@ -368,9 +379,6 @@ namespace Nutrition_backend.Migrations
                     b.Property<int>("Purok")
                         .HasColumnType("int");
 
-                    b.Property<string>("RecordedBy")
-                        .HasColumnType("longtext");
-
                     b.Property<DateTime>("RecordedDate")
                         .HasColumnType("datetime(6)");
 
@@ -551,7 +559,7 @@ namespace Nutrition_backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2026, 8, 5, 7, 32, 41, 289, DateTimeKind.Utc).AddTicks(6141),
+                            CreatedAt = new DateTime(2026, 8, 5, 5, 24, 27, 150, DateTimeKind.Utc).AddTicks(7399),
                             Email = "dextertenchavez@gmail.com",
                             IsActive = true,
                             PasswordHash = "$2a$12$bpNqnsk2pO8EmR7mdumID.oNto8kb6O4xdmyQWf.nZ3ZVZhJnmOmO",
@@ -573,9 +581,8 @@ namespace Nutrition_backend.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
-                    b.Property<string>("HouseholdName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<int>("PoorFamiliesGivenSeeds")
+                        .HasColumnType("int");
 
                     b.Property<int>("Purok")
                         .HasColumnType("int");
@@ -587,13 +594,41 @@ namespace Nutrition_backend.Migrations
                     b.Property<DateTime>("RecordedDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("SeedTypes")
-                        .HasColumnType("longtext");
+                    b.Property<int>("SeedCount1")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SeedCount2")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SeedCount3")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SeedType1")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("SeedType2")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("SeedType3")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<int>("SubTotal")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalHouseholds")
+                        .HasColumnType("int");
 
                     b.Property<int>("Year")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Barangay", "Purok", "Year")
+                        .IsUnique()
+                        .HasDatabaseName("IX_VegetableSeed_BarangayPurokYear");
 
                     b.ToTable("VegetableSeedReports");
                 });

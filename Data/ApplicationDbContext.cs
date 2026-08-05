@@ -42,14 +42,17 @@ namespace Nutrition_backend.Data
             modelBuilder.Entity<Barangay>()
                 .Ignore(b => b.Reports);
 
+            // UPDATED: Removed unique index from AnimalRaisingReport
             modelBuilder.Entity<AnimalRaisingReport>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Barangay).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Purok).IsRequired();
-                entity.Property(e => e.TotalHouseholds).IsRequired();
+                entity.Property(e => e.HouseholdName).IsRequired().HasMaxLength(200);
                 entity.Property(e => e.Year).IsRequired();
-                entity.HasIndex(e => new { e.Barangay, e.Purok, e.Year }).IsUnique().HasDatabaseName("IX_AnimalRaising_BarangayPurokYear");
+                entity.Property(e => e.RecordedBy).HasMaxLength(100);
+                entity.Property(e => e.RecordedDate).IsRequired();
+                // REMOVED: entity.HasIndex(e => new { e.Barangay, e.Purok, e.Year }).IsUnique().HasDatabaseName("IX_AnimalRaising_BarangayPurokYear");
             });
 
             modelBuilder.Entity<PotableWaterReport>(entity =>
@@ -57,9 +60,8 @@ namespace Nutrition_backend.Data
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Barangay).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Purok).IsRequired();
-                entity.Property(e => e.TotalHouseholds).IsRequired();
+                entity.Property(e => e.HouseholdName).IsRequired();
                 entity.Property(e => e.Year).IsRequired();
-                entity.HasIndex(e => new { e.Barangay, e.Purok, e.Year }).IsUnique().HasDatabaseName("IX_PotableWater_BarangayPurokYear");
             });
 
             modelBuilder.Entity<IodizedSaltReport>(entity =>
@@ -70,10 +72,6 @@ namespace Nutrition_backend.Data
                 entity.Property(e => e.StoreName).HasMaxLength(200);
                 entity.Property(e => e.FineSaltOthers).HasMaxLength(100);
                 entity.Property(e => e.RockSaltOthers).HasMaxLength(100);
-                entity.Property(e => e.OilOthers).HasMaxLength(100);
-                entity.Property(e => e.PreparedBy).HasMaxLength(100);
-                entity.Property(e => e.NotedBy).HasMaxLength(100);
-                entity.Property(e => e.ApprovedBy).HasMaxLength(100);
                 entity.HasIndex(e => new { e.Barangay, e.Purok, e.StoreName }).IsUnique().HasDatabaseName("IX_IodizedSalt_BarangayPurokStore");
             });
 
@@ -82,10 +80,9 @@ namespace Nutrition_backend.Data
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Barangay).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Purok).IsRequired();
-                entity.Property(e => e.TotalHouseholds).IsRequired();
+                entity.Property(e => e.HouseholdName).IsRequired();
                 entity.Property(e => e.Year).IsRequired();
                 entity.Property(e => e.RecordedBy).HasMaxLength(100);
-                entity.HasIndex(e => new { e.Barangay, e.Purok, e.Year }).IsUnique().HasDatabaseName("IX_CR_BarangayPurokYear");
             });
 
             modelBuilder.Entity<BackyardGardeningReport>(entity =>
@@ -93,10 +90,9 @@ namespace Nutrition_backend.Data
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Barangay).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Purok).IsRequired();
-                entity.Property(e => e.TotalHouseholds).IsRequired();
+                entity.Property(e => e.HouseholdName).IsRequired();
                 entity.Property(e => e.Year).IsRequired();
                 entity.Property(e => e.RecordedBy).HasMaxLength(100);
-                entity.HasIndex(e => new { e.Barangay, e.Purok, e.Year }).IsUnique().HasDatabaseName("IX_Gardening_BarangayPurokYear");
             });
 
             modelBuilder.Entity<PregnantWomenReport>(entity =>
@@ -114,13 +110,9 @@ namespace Nutrition_backend.Data
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Barangay).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Purok).IsRequired();
-                entity.Property(e => e.TotalHouseholds).IsRequired();
+                entity.Property(e => e.HouseholdName).IsRequired();
                 entity.Property(e => e.Year).IsRequired();
-                entity.Property(e => e.SeedType1).HasMaxLength(50);
-                entity.Property(e => e.SeedType2).HasMaxLength(50);
-                entity.Property(e => e.SeedType3).HasMaxLength(50);
                 entity.Property(e => e.RecordedBy).HasMaxLength(100);
-                entity.HasIndex(e => new { e.Barangay, e.Purok, e.Year }).IsUnique().HasDatabaseName("IX_VegetableSeed_BarangayPurokYear");
             });
 
             modelBuilder.Entity<AnimalDispersalReport>(entity =>
@@ -128,10 +120,9 @@ namespace Nutrition_backend.Data
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Barangay).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Purok).IsRequired();
-                entity.Property(e => e.TotalHouseholds).IsRequired();
+                entity.Property(e => e.HouseholdName).IsRequired().HasMaxLength(200);
                 entity.Property(e => e.Year).IsRequired();
                 entity.Property(e => e.RecordedBy).HasMaxLength(100);
-                entity.HasIndex(e => new { e.Barangay, e.Purok, e.Year }).IsUnique().HasDatabaseName("IX_AnimalDispersal_BarangayPurokYear");
             });
 
             modelBuilder.Entity<Barangay>().HasData(
