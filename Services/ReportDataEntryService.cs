@@ -118,33 +118,40 @@ namespace Nutrition_backend.Services
         }
 
         public async Task<List<AnimalRaisingResponseDto>> GetAnimalRaisingAsync(string barangay, int year)
-        {
-            var reports = await _context.AnimalRaisingReports
-                .Where(r => r.Barangay == barangay && r.Year == year)
-                .OrderBy(r => r.Purok)
-                .ToListAsync();
+{
+    var query = _context.AnimalRaisingReports.Where(r => r.Barangay == barangay);
+    
+    // If year is 0, return all records (no year filter)
+    if (year != 0)
+    {
+        query = query.Where(r => r.Year == year);
+    }
+    
+    var reports = await query
+        .OrderBy(r => r.Purok)
+        .ToListAsync();
 
-            return reports.Select(r => new AnimalRaisingResponseDto
-            {
-                Id = r.Id,
-                Barangay = r.Barangay,
-                Purok = r.Purok,
-                HouseholdName = r.HouseholdName,
-                ChickenMale = r.ChickenMale,
-                ChickenFemale = r.ChickenFemale,
-                PigMale = r.PigMale,
-                PigFemale = r.PigFemale,
-                GoatMale = r.GoatMale,
-                GoatFemale = r.GoatFemale,
-                CowMale = r.CowMale,
-                CowFemale = r.CowFemale,
-                CarabaoMale = r.CarabaoMale,
-                CarabaoFemale = r.CarabaoFemale,
-                Year = r.Year,
-                RecordedBy = r.RecordedBy,
-                RecordedDate = r.RecordedDate
-            }).ToList();
-        }
+    return reports.Select(r => new AnimalRaisingResponseDto
+    {
+        Id = r.Id,
+        Barangay = r.Barangay,
+        Purok = r.Purok,
+        HouseholdName = r.HouseholdName,
+        ChickenMale = r.ChickenMale,
+        ChickenFemale = r.ChickenFemale,
+        PigMale = r.PigMale,
+        PigFemale = r.PigFemale,
+        GoatMale = r.GoatMale,
+        GoatFemale = r.GoatFemale,
+        CowMale = r.CowMale,
+        CowFemale = r.CowFemale,
+        CarabaoMale = r.CarabaoMale,
+        CarabaoFemale = r.CarabaoFemale,
+        Year = r.Year,
+        RecordedBy = r.RecordedBy,
+        RecordedDate = r.RecordedDate
+    }).ToList();
+}
 
         public async Task<AnimalRaisingResponseDto> UpdateAnimalRaisingAsync(int id, AnimalRaisingEntryDto dto)
 {
@@ -541,7 +548,7 @@ public async Task<bool> DeleteCRAsync(int id)
                 HasGarden = dto.HasGarden,
                 Year = dto.Year,
                 RecordedBy = dto.RecordedBy,
-                RecordedDate = DateTime.UtcNow
+                RecordedDate = dto.RecordedDate != DateTime.MinValue ? dto.RecordedDate : DateTime.UtcNow
             };
 
             _context.BackyardGardeningReports.Add(report);
@@ -561,24 +568,31 @@ public async Task<bool> DeleteCRAsync(int id)
         }
 
         public async Task<List<BackyardGardeningResponseDto>> GetBackyardGardeningAsync(string barangay, int year)
-        {
-            var reports = await _context.BackyardGardeningReports
-                .Where(r => r.Barangay == barangay && r.Year == year)
-                .OrderBy(r => r.Purok)
-                .ToListAsync();
+{
+    var query = _context.BackyardGardeningReports.Where(r => r.Barangay == barangay);
+    
+    // If year is 0, return all records (no year filter)
+    if (year != 0)
+    {
+        query = query.Where(r => r.Year == year);
+    }
+    
+    var reports = await query
+        .OrderBy(r => r.Purok)
+        .ToListAsync();
 
-            return reports.Select(r => new BackyardGardeningResponseDto
-            {
-                Id = r.Id,
-                Barangay = r.Barangay,
-                Purok = r.Purok,
-                HouseholdName = r.HouseholdName,
-                HasGarden = r.HasGarden,
-                Year = r.Year,
-                RecordedBy = r.RecordedBy,
-                RecordedDate = r.RecordedDate
-            }).ToList();
-        }
+    return reports.Select(r => new BackyardGardeningResponseDto
+    {
+        Id = r.Id,
+        Barangay = r.Barangay,
+        Purok = r.Purok,
+        HouseholdName = r.HouseholdName,
+        HasGarden = r.HasGarden,
+        Year = r.Year,
+        RecordedBy = r.RecordedBy,
+        RecordedDate = r.RecordedDate
+    }).ToList();
+}
 
         public async Task<BackyardGardeningResponseDto> UpdateBackyardGardeningAsync(int id, BackyardGardeningEntryDto dto)
 {
@@ -655,8 +669,15 @@ public async Task<bool> DeleteBackyardGardeningAsync(int id)
 
         public async Task<List<PregnantWomenResponseDto>> GetPregnantWomenAsync(string barangay, int year)
         {
-            var reports = await _context.PregnantWomenReports
-                .Where(r => r.Barangay == barangay && r.Year == year)
+            var query = _context.PregnantWomenReports.Where(r => r.Barangay == barangay);
+            
+            // If year is 0, return all records (no year filter)
+            if (year != 0)
+            {
+                query = query.Where(r => r.Year == year);
+            }
+            
+            var reports = await query
                 .OrderBy(r => r.Purok)
                 .ToListAsync();
 
@@ -731,7 +752,7 @@ public async Task<bool> DeletePregnantWomenAsync(int id)
                 SeedTypes = dto.SeedTypes,
                 Year = dto.Year,
                 RecordedBy = dto.RecordedBy,
-                RecordedDate = DateTime.UtcNow
+                RecordedDate = dto.RecordedDate != DateTime.MinValue ? dto.RecordedDate : DateTime.UtcNow
             };
 
             _context.VegetableSeedReports.Add(report);
@@ -752,8 +773,14 @@ public async Task<bool> DeletePregnantWomenAsync(int id)
 
         public async Task<List<VegetableSeedResponseDto>> GetVegetableSeedAsync(string barangay, int year)
         {
-            var reports = await _context.VegetableSeedReports
-                .Where(r => r.Barangay == barangay && r.Year == year)
+            var query = _context.VegetableSeedReports.Where(r => r.Barangay == barangay);
+            
+            if (year != 0)
+            {
+                query = query.Where(r => r.Year == year);
+            }
+            
+            var reports = await query
                 .OrderBy(r => r.Purok)
                 .ToListAsync();
 
@@ -829,7 +856,7 @@ public async Task<bool> DeletePregnantWomenAsync(int id)
                 CarabaoFemale = dto.CarabaoFemale,
                 Year = dto.Year,
                 RecordedBy = dto.RecordedBy,
-                RecordedDate = DateTime.UtcNow
+                RecordedDate = dto.RecordedDate != DateTime.MinValue ? dto.RecordedDate : DateTime.UtcNow
             };
 
             _context.AnimalDispersalReports.Add(report);
@@ -858,33 +885,39 @@ public async Task<bool> DeletePregnantWomenAsync(int id)
         }
 
         public async Task<List<AnimalDispersalResponseDto>> GetAnimalDispersalAsync(string barangay, int year)
-        {
-            var reports = await _context.AnimalDispersalReports
-                .Where(r => r.Barangay == barangay && r.Year == year)
-                .OrderBy(r => r.Purok)
-                .ToListAsync();
+{
+    var query = _context.AnimalDispersalReports.Where(r => r.Barangay == barangay);
+    
+    if (year != 0)
+    {
+        query = query.Where(r => r.Year == year);
+    }
+    
+    var reports = await query
+        .OrderBy(r => r.Purok)
+        .ToListAsync();
 
-            return reports.Select(r => new AnimalDispersalResponseDto
-            {
-                Id = r.Id,
-                Barangay = r.Barangay,
-                Purok = r.Purok,
-                HouseholdName = r.HouseholdName,
-                ChickenMale = r.ChickenMale,
-                ChickenFemale = r.ChickenFemale,
-                PigMale = r.PigMale,
-                PigFemale = r.PigFemale,
-                GoatMale = r.GoatMale,
-                GoatFemale = r.GoatFemale,
-                CowMale = r.CowMale,
-                CowFemale = r.CowFemale,
-                CarabaoMale = r.CarabaoMale,
-                CarabaoFemale = r.CarabaoFemale,
-                Year = r.Year,
-                RecordedBy = r.RecordedBy,
-                RecordedDate = r.RecordedDate
-            }).ToList();
-        }
+    return reports.Select(r => new AnimalDispersalResponseDto
+    {
+        Id = r.Id,
+        Barangay = r.Barangay,
+        Purok = r.Purok,
+        HouseholdName = r.HouseholdName,
+        ChickenMale = r.ChickenMale,
+        ChickenFemale = r.ChickenFemale,
+        PigMale = r.PigMale,
+        PigFemale = r.PigFemale,
+        GoatMale = r.GoatMale,
+        GoatFemale = r.GoatFemale,
+        CowMale = r.CowMale,
+        CowFemale = r.CowFemale,
+        CarabaoMale = r.CarabaoMale,
+        CarabaoFemale = r.CarabaoFemale,
+        Year = r.Year,
+        RecordedBy = r.RecordedBy,
+        RecordedDate = r.RecordedDate
+    }).ToList();
+}
 
         public async Task<AnimalDispersalResponseDto> UpdateAnimalDispersalAsync(int id, AnimalDispersalEntryDto dto)
 {

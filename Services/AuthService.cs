@@ -13,7 +13,6 @@ namespace Nutrition_backend.Services
     public interface IAuthService
     {
         Task<AuthResponseDto> LoginAsync(LoginDto loginDto);
-        Task<AuthResponseDto> RegisterAsync(RegisterDto registerDto);
         Task<User?> GetUserByIdAsync(int id);
         Task<bool> UserExistsAsync(string username);
     }
@@ -63,52 +62,6 @@ namespace Nutrition_backend.Services
             };
         }
 
-        public async Task<AuthResponseDto> RegisterAsync(RegisterDto registerDto)
-        {
-            // Check if user exists
-            if (await _context.Users.AnyAsync(u => u.Username == registerDto.Username))
-            {
-                throw new InvalidOperationException("Username already exists");
-            }
-
-            if (await _context.Users.AnyAsync(u => u.Email == registerDto.Email))
-            {
-                throw new InvalidOperationException("Email already exists");
-            }
-
-            // Validate barangay for staff
-            if (registerDto.Role == "staff" && string.IsNullOrEmpty(registerDto.Barangay))
-            {
-                throw new InvalidOperationException("Barangay is required for staff");
-            }
-
-            var user = new User
-            {
-                Username = registerDto.Username,
-                Email = registerDto.Email,
-                PasswordHash = _passwordService.HashPassword(registerDto.Password),
-                Role = registerDto.Role ?? "staff",
-                Barangay = registerDto.Barangay,
-                CreatedAt = DateTime.UtcNow,
-                IsActive = true
-            };
-
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            var token = GenerateJwtToken(user);
-
-            return new AuthResponseDto
-            {
-                Id = user.Id,
-                Username = user.Username,
-                Email = user.Email,
-                Role = user.Role,
-                Barangay = user.Barangay,
-                Token = token,
-                ExpiresAt = DateTime.UtcNow.AddHours(24)
-            };
-        }
 
         public async Task<User?> GetUserByIdAsync(int id)
         {

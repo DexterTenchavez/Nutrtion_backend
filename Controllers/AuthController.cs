@@ -32,23 +32,5 @@ namespace Nutrition_backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
-        {
-            try
-            {
-                var result = await _authService.RegisterAsync(registerDto);
-                return Ok(result);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
     }
 }
