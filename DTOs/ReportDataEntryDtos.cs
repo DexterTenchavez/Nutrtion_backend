@@ -236,6 +236,7 @@ namespace Nutrition_backend.DTOs
         public string? OilOthers { get; set; }
         public DateTime RecordedDate { get; set; }
         public string? RecordedBy { get; set; }
+        public int Year { get; set; }
     }
 
     public class CRResponseDto

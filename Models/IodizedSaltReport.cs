@@ -38,5 +38,6 @@ namespace Nutrition_backend.Models
         
         public DateTime RecordedDate { get; set; } = DateTime.UtcNow;
         public string? RecordedBy { get; set; }
+        public int Year { get; set; } 
     }
 }

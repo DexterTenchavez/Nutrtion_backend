@@ -23,7 +23,7 @@ namespace Nutrition_backend.Services
 
         
         Task<IodizedSaltResponseDto> CreateIodizedSaltAsync(IodizedSaltEntryDto dto);
-        Task<List<IodizedSaltResponseDto>> GetIodizedSaltAsync(string barangay);
+        Task<List<IodizedSaltResponseDto>> GetIodizedSaltAsync(string barangay, int year);
         Task<IodizedSaltResponseDto> UpdateIodizedSaltAsync(int id, IodizedSaltEntryDto dto);
         Task<bool> DeleteIodizedSaltAsync(int id);
 
@@ -221,7 +221,7 @@ public async Task<bool> DeleteAnimalRaisingAsync(int id)
                 Level3 = dto.Level3,
                 Year = dto.Year,
                 RecordedBy = dto.RecordedBy,
-                RecordedDate = DateTime.UtcNow
+                RecordedDate = dto.RecordedDate != DateTime.MinValue ? dto.RecordedDate : DateTime.UtcNow
             };
 
             _context.PotableWaterReports.Add(report);
@@ -244,8 +244,15 @@ public async Task<bool> DeleteAnimalRaisingAsync(int id)
 
         public async Task<List<PotableWaterResponseDto>> GetPotableWaterAsync(string barangay, int year)
         {
-            var reports = await _context.PotableWaterReports
-                .Where(r => r.Barangay == barangay && r.Year == year)
+            var query = _context.PotableWaterReports.Where(r => r.Barangay == barangay);
+            
+            // If year is 0, return all records (no year filter)
+            if (year != 0)
+            {
+                query = query.Where(r => r.Year == year);
+            }
+            
+            var reports = await query
                 .OrderBy(r => r.Purok)
                 .ToListAsync();
 
@@ -326,7 +333,8 @@ public async Task<bool> DeletePotableWaterAsync(int id)
                 OilUFC = dto.OilUFC,
                 OilJolly = dto.OilJolly,
                 OilOthers = dto.OilOthers,
-                RecordedDate = DateTime.UtcNow
+                RecordedDate = dto.RecordedDate != DateTime.MinValue ? dto.RecordedDate : DateTime.UtcNow,
+                Year = dto.RecordedDate.Year
             };
 
             _context.IodizedSaltReports.Add(report);
@@ -351,39 +359,49 @@ public async Task<bool> DeletePotableWaterAsync(int id)
                 OilUFC = report.OilUFC,
                 OilJolly = report.OilJolly,
                 OilOthers = report.OilOthers,
-                RecordedDate = report.RecordedDate
+                RecordedDate = report.RecordedDate,
+                Year = report.Year
             };
         }
 
-        public async Task<List<IodizedSaltResponseDto>> GetIodizedSaltAsync(string barangay)
-        {
-            var reports = await _context.IodizedSaltReports
-                .Where(r => r.Barangay == barangay)
-                .OrderByDescending(r => r.RecordedDate)
-                .ToListAsync();
+        public async Task<List<IodizedSaltResponseDto>> GetIodizedSaltAsync(string barangay, int year)
+{
+    var query = _context.IodizedSaltReports.Where(r => r.Barangay == barangay);
+    
+    // If year is 0, return all records (no year filter)
+    if (year != 0)
+    {
+        query = query.Where(r => r.Year == year);
+    }
+    
+    var reports = await query
+        .OrderByDescending(r => r.RecordedDate)
+        .ToListAsync();
 
-            return reports.Select(r => new IodizedSaltResponseDto
-            {
-                Id = r.Id,
-                Barangay = r.Barangay,
-                Purok = r.Purok,
-                StoreName = r.StoreName,
-                FineSaltFidel = r.FineSaltFidel,
-                FineSaltUFC = r.FineSaltUFC,
-                FineSaltPacificBay = r.FineSaltPacificBay,
-                FineSaltOthers = r.FineSaltOthers,
-                RockSaltAtlantic = r.RockSaltAtlantic,
-                RockSaltFidel = r.RockSaltFidel,
-                RockSaltLasap = r.RockSaltLasap,
-                RockSaltPagAsa = r.RockSaltPagAsa,
-                RockSaltJay = r.RockSaltJay,
-                RockSaltOthers = r.RockSaltOthers,
-                OilUFC = r.OilUFC,
-                OilJolly = r.OilJolly,
-                OilOthers = r.OilOthers,
-                RecordedDate = r.RecordedDate
-            }).ToList();
-        }
+    return reports.Select(r => new IodizedSaltResponseDto
+    {
+        Id = r.Id,
+        Barangay = r.Barangay,
+        Purok = r.Purok,
+        StoreName = r.StoreName,
+        FineSaltFidel = r.FineSaltFidel,
+        FineSaltUFC = r.FineSaltUFC,
+        FineSaltPacificBay = r.FineSaltPacificBay,
+        FineSaltOthers = r.FineSaltOthers,
+        RockSaltAtlantic = r.RockSaltAtlantic,
+        RockSaltFidel = r.RockSaltFidel,
+        RockSaltLasap = r.RockSaltLasap,
+        RockSaltPagAsa = r.RockSaltPagAsa,
+        RockSaltJay = r.RockSaltJay,
+        RockSaltOthers = r.RockSaltOthers,
+        OilUFC = r.OilUFC,
+        OilJolly = r.OilJolly,
+        OilOthers = r.OilOthers,
+        RecordedDate = r.RecordedDate,
+        RecordedBy = r.RecordedBy,
+        Year = r.Year  // Make sure Year is included in the response
+    }).ToList();
+}
 
         public async Task<IodizedSaltResponseDto> UpdateIodizedSaltAsync(int id, IodizedSaltEntryDto dto)
 {
@@ -409,6 +427,7 @@ public async Task<bool> DeletePotableWaterAsync(int id)
     report.OilOthers = dto.OilOthers;
     report.RecordedDate = dto.RecordedDate != DateTime.MinValue ? dto.RecordedDate : DateTime.UtcNow;
     report.RecordedBy = dto.RecordedBy;
+    report.Year = report.RecordedDate.Year;
 
     await _context.SaveChangesAsync();
 
@@ -431,6 +450,7 @@ public async Task<bool> DeletePotableWaterAsync(int id)
         OilUFC = report.OilUFC,
         OilJolly = report.OilJolly,
         OilOthers = report.OilOthers,
+        Year = report.Year,
         RecordedBy = report.RecordedBy,
         RecordedDate = report.RecordedDate
     };

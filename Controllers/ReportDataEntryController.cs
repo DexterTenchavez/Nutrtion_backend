@@ -159,18 +159,18 @@ namespace Nutrition_backend.Controllers
         }
 
         [HttpGet("iodized-salt/{barangay}")]
-        public async Task<IActionResult> GetIodizedSalt(string barangay)
-        {
-            try
-            {
-                var result = await _service.GetIodizedSaltAsync(barangay);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
+public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int year = 0)
+{
+    try
+    {
+        var result = await _service.GetIodizedSaltAsync(barangay, year);
+        return Ok(result);
+    }
+    catch (Exception ex)
+    {
+        return BadRequest(new { message = ex.Message });
+    }
+}
 
         [HttpPut("iodized-salt/{id}")]
         public async Task<IActionResult> UpdateIodizedSalt(int id, [FromBody] IodizedSaltEntryDto dto)
