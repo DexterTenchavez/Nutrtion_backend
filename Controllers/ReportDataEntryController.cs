@@ -80,6 +80,21 @@ namespace Nutrition_backend.Controllers
             }
         }
 
+        [HttpGet("animal-raising/all")]
+        public async Task<IActionResult> GetAllAnimalRaising()
+        {
+            try
+            {
+                // Pass empty string instead of null
+                var result = await _service.GetAnimalRaisingAsync(string.Empty, 0);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         // ==================== POTABLE WATER ====================
         [HttpPost("potable-water")]
         public async Task<IActionResult> CreatePotableWater([FromBody] PotableWaterEntryDto dto)
@@ -87,6 +102,20 @@ namespace Nutrition_backend.Controllers
             try
             {
                 var result = await _service.CreatePotableWaterAsync(dto);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("potable-water/all")]
+        public async Task<IActionResult> GetAllPotableWater()
+        {
+            try
+            {
+                var result = await _service.GetPotableWaterAsync(string.Empty, 0);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -172,6 +201,20 @@ public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int
     }
 }
 
+        [HttpGet("iodized-salt/all")]
+        public async Task<IActionResult> GetAllIodizedSalt()
+        {
+            try
+            {
+                var result = await _service.GetIodizedSaltAsync(string.Empty, 0);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpPut("iodized-salt/{id}")]
         public async Task<IActionResult> UpdateIodizedSalt(int id, [FromBody] IodizedSaltEntryDto dto)
         {
@@ -227,6 +270,20 @@ public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int
             try
             {
                 var result = await _service.GetCRAsync(barangay, year);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+       [HttpGet("cr/all")]
+        public async Task<IActionResult> GetAllCR()
+        {
+            try
+            {
+                var result = await _service.GetCRAsync(string.Empty, 0);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -298,6 +355,20 @@ public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int
             }
         }
 
+        [HttpGet("backyard-gardening/all")]
+        public async Task<IActionResult> GetAllBackyardGardening()
+        {
+            try
+            {
+                var result = await _service.GetBackyardGardeningAsync(string.Empty, 0);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpPut("backyard-gardening/{id}")]
         public async Task<IActionResult> UpdateBackyardGardening(int id, [FromBody] BackyardGardeningEntryDto dto)
         {
@@ -361,6 +432,20 @@ public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int
             }
         }
 
+       [HttpGet("pregnant-women/all")]
+        public async Task<IActionResult> GetAllPregnantWomen()
+        {
+            try
+            {
+                var result = await _service.GetPregnantWomenAsync(string.Empty, 0);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpPut("pregnant-women/{id}")]
         public async Task<IActionResult> UpdatePregnantWomen(int id, [FromBody] PregnantWomenEntryDto dto)
         {
@@ -416,6 +501,21 @@ public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int
             try
             {
                 var result = await _service.GetVegetableSeedAsync(barangay, year);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
+        [HttpGet("vegetable-seeds/all")]
+        public async Task<IActionResult> GetAllVegetableSeed()
+        {
+            try
+            {
+                var result = await _service.GetVegetableSeedAsync(string.Empty, 0);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -498,6 +598,20 @@ public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("animal-dispersal/all")]
+        public async Task<IActionResult> GetAllAnimalDispersal()
+        {
+            try
+            {
+                var result = await _service.GetAnimalDispersalAsync(string.Empty, 0);
+                return Ok(result);
             }
             catch (Exception ex)
             {

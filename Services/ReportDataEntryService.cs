@@ -119,9 +119,13 @@ namespace Nutrition_backend.Services
 
         public async Task<List<AnimalRaisingResponseDto>> GetAnimalRaisingAsync(string barangay, int year)
 {
-    var query = _context.AnimalRaisingReports.Where(r => r.Barangay == barangay);
+    var query = _context.AnimalRaisingReports.AsQueryable();
     
-    // If year is 0, return all records (no year filter)
+    if (!string.IsNullOrEmpty(barangay))
+    {
+        query = query.Where(r => r.Barangay == barangay);
+    }
+
     if (year != 0)
     {
         query = query.Where(r => r.Year == year);
@@ -244,9 +248,14 @@ public async Task<bool> DeleteAnimalRaisingAsync(int id)
 
         public async Task<List<PotableWaterResponseDto>> GetPotableWaterAsync(string barangay, int year)
         {
-            var query = _context.PotableWaterReports.Where(r => r.Barangay == barangay);
+            var query = _context.PotableWaterReports.AsQueryable();
             
-            // If year is 0, return all records (no year filter)
+            if (!string.IsNullOrEmpty(barangay))
+            {
+                query = query.Where(r => r.Barangay == barangay);
+            }
+
+
             if (year != 0)
             {
                 query = query.Where(r => r.Year == year);
@@ -366,9 +375,14 @@ public async Task<bool> DeletePotableWaterAsync(int id)
 
         public async Task<List<IodizedSaltResponseDto>> GetIodizedSaltAsync(string barangay, int year)
 {
-    var query = _context.IodizedSaltReports.Where(r => r.Barangay == barangay);
+    var query = _context.IodizedSaltReports.AsQueryable();
     
-    // If year is 0, return all records (no year filter)
+    if (!string.IsNullOrEmpty(barangay))
+    {
+        query = query.Where(r => r.Barangay == barangay);
+    }
+
+
     if (year != 0)
     {
         query = query.Where(r => r.Year == year);
@@ -499,8 +513,19 @@ public async Task<bool> DeleteIodizedSaltAsync(int id)
 
         public async Task<List<CRResponseDto>> GetCRAsync(string barangay, int year)
         {
-            var reports = await _context.CRReports
-                .Where(r => r.Barangay == barangay && r.Year == year)
+            var query = _context.CRReports.AsQueryable();
+            if (!string.IsNullOrEmpty(barangay))
+            {
+                query = query.Where(r => r.Barangay == barangay);
+            }
+
+
+            if (year != 0)
+            {
+                query = query.Where(r => r.Year == year);
+            }
+            
+            var reports = await query
                 .OrderBy(r => r.Purok)
                 .ToListAsync();
 
@@ -589,9 +614,14 @@ public async Task<bool> DeleteCRAsync(int id)
 
         public async Task<List<BackyardGardeningResponseDto>> GetBackyardGardeningAsync(string barangay, int year)
 {
-    var query = _context.BackyardGardeningReports.Where(r => r.Barangay == barangay);
+    var query = _context.BackyardGardeningReports.AsQueryable();
     
-    // If year is 0, return all records (no year filter)
+    if (!string.IsNullOrEmpty(barangay))
+    {
+        query = query.Where(r => r.Barangay == barangay);
+    }
+
+    
     if (year != 0)
     {
         query = query.Where(r => r.Year == year);
@@ -689,8 +719,13 @@ public async Task<bool> DeleteBackyardGardeningAsync(int id)
 
         public async Task<List<PregnantWomenResponseDto>> GetPregnantWomenAsync(string barangay, int year)
         {
-            var query = _context.PregnantWomenReports.Where(r => r.Barangay == barangay);
+            var query = _context.PregnantWomenReports.AsQueryable();
             
+            if (!string.IsNullOrEmpty(barangay))
+            {
+                query = query.Where(r => r.Barangay == barangay);
+            }
+
             // If year is 0, return all records (no year filter)
             if (year != 0)
             {
@@ -792,30 +827,35 @@ public async Task<bool> DeletePregnantWomenAsync(int id)
         }
 
         public async Task<List<VegetableSeedResponseDto>> GetVegetableSeedAsync(string barangay, int year)
-        {
-            var query = _context.VegetableSeedReports.Where(r => r.Barangay == barangay);
-            
-            if (year != 0)
-            {
-                query = query.Where(r => r.Year == year);
-            }
-            
-            var reports = await query
-                .OrderBy(r => r.Purok)
-                .ToListAsync();
+{
+    var query = _context.VegetableSeedReports.AsQueryable();
+    
+    if (!string.IsNullOrEmpty(barangay))
+    {
+        query = query.Where(r => r.Barangay == barangay);
+    }
+    
+    if (year != 0)
+    {
+        query = query.Where(r => r.Year == year);
+    }
+    
+    var reports = await query
+        .OrderBy(r => r.Purok)
+        .ToListAsync();
 
-            return reports.Select(r => new VegetableSeedResponseDto
-            {
-                Id = r.Id,
-                Barangay = r.Barangay,
-                Purok = r.Purok,
-                HouseholdName = r.HouseholdName,
-                SeedTypes = r.SeedTypes,
-                Year = r.Year,
-                RecordedBy = r.RecordedBy,
-                RecordedDate = r.RecordedDate
-            }).ToList();
-        }
+    return reports.Select(r => new VegetableSeedResponseDto
+    {
+        Id = r.Id,
+        Barangay = r.Barangay,
+        Purok = r.Purok,
+        HouseholdName = r.HouseholdName,
+        SeedTypes = r.SeedTypes,
+        Year = r.Year,
+        RecordedBy = r.RecordedBy,
+        RecordedDate = r.RecordedDate
+    }).ToList();
+}
 
         public async Task<VegetableSeedResponseDto> UpdateVegetableSeedAsync(int id, VegetableSeedEntryDto dto)
 {
@@ -906,7 +946,11 @@ public async Task<bool> DeletePregnantWomenAsync(int id)
 
         public async Task<List<AnimalDispersalResponseDto>> GetAnimalDispersalAsync(string barangay, int year)
 {
-    var query = _context.AnimalDispersalReports.Where(r => r.Barangay == barangay);
+    var query = _context.AnimalDispersalReports.AsQueryable();
+    if (!string.IsNullOrEmpty(barangay))
+    {
+        query = query.Where(r => r.Barangay == barangay);
+    }
     
     if (year != 0)
     {
