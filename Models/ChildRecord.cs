@@ -25,6 +25,9 @@ namespace Nutrition_backend.Models
         public string FullName { get; set; } = string.Empty;
 
         [Required]
+        public DateTime Birthdate { get; set; }
+
+        [Required]
         public int AgeMonths { get; set; }
 
         [Required]

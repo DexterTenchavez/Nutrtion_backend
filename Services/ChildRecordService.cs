@@ -33,6 +33,7 @@ namespace Nutrition_backend.Services
                 Purok = dto.Purok,
                 TargetCategory = dto.TargetCategory,
                 FullName = dto.FullName,
+                Birthdate = dto.Birthdate,
                 AgeMonths = dto.AgeMonths,
                 Weight = dto.Weight,
                 Height = dto.Height,
@@ -86,6 +87,7 @@ namespace Nutrition_backend.Services
             record.Purok = dto.Purok;
             record.TargetCategory = dto.TargetCategory;
             record.FullName = dto.FullName;
+            record.Birthdate = dto.Birthdate;
             record.AgeMonths = dto.AgeMonths;
             record.Weight = dto.Weight;
             record.Height = dto.Height;

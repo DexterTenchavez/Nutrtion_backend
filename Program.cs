@@ -114,6 +114,9 @@ else
 
 app.UseCors("AllowAll");
 
+// Use your custom rate limit middleware
+app.UseMiddleware<RateLimitMiddleware>();
+
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseAuthentication();

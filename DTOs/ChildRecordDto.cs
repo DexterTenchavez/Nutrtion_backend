@@ -20,6 +20,9 @@ namespace Nutrition_backend.DTOs
         public string FullName { get; set; } = string.Empty;
 
         [Required]
+        public DateTime Birthdate { get; set; }
+
+        [Required]
         public int AgeMonths { get; set; }
 
         [Required]
@@ -33,15 +36,16 @@ namespace Nutrition_backend.DTOs
         [Required]
         [MaxLength(50)]
         public string NutritionalStatus { get; set; } = string.Empty;
+        
         [Required]
         public DateTime RecordedDate { get; set; } = DateTime.UtcNow;
-
     }
+
     public class CheckDuplicateDto
-{
-    public string FullName { get; set; } = String.Empty;
-    public string Barangay { get; set; } = String.Empty;
-    public int Purok { get; set; }
-    public int? ExcludeId { get; set; }
-}
+    {
+        public string FullName { get; set; } = String.Empty;
+        public string Barangay { get; set; } = String.Empty;
+        public int Purok { get; set; }
+        public int? ExcludeId { get; set; }
+    }
 }
