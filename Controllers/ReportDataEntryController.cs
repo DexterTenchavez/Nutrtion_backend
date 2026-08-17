@@ -17,6 +17,120 @@ namespace Nutrition_backend.Controllers
             _service = service;
         }
 
+        // ==================== DUPLICATE CHECK ENDPOINTS ====================
+        
+        [HttpGet("animal-raising/check-duplicate")]
+        public async Task<IActionResult> CheckAnimalRaisingDuplicate([FromQuery] string householdName, [FromQuery] string barangay, [FromQuery] int purok, [FromQuery] int? excludeId = null)
+        {
+            try
+            {
+                var exists = await _service.CheckAnimalRaisingDuplicateAsync(householdName, barangay, purok, excludeId);
+                return Ok(new { exists });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("animal-dispersal/check-duplicate")]
+        public async Task<IActionResult> CheckAnimalDispersalDuplicate([FromQuery] string householdName, [FromQuery] string barangay, [FromQuery] int purok, [FromQuery] int? excludeId = null)
+        {
+            try
+            {
+                var exists = await _service.CheckAnimalDispersalDuplicateAsync(householdName, barangay, purok, excludeId);
+                return Ok(new { exists });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("potable-water/check-duplicate")]
+        public async Task<IActionResult> CheckPotableWaterDuplicate([FromQuery] string householdName, [FromQuery] string barangay, [FromQuery] int purok, [FromQuery] int? excludeId = null)
+        {
+            try
+            {
+                var exists = await _service.CheckPotableWaterDuplicateAsync(householdName, barangay, purok, excludeId);
+                return Ok(new { exists });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("cr/check-duplicate")]
+        public async Task<IActionResult> CheckCRDuplicate([FromQuery] string householdName, [FromQuery] string barangay, [FromQuery] int purok, [FromQuery] int? excludeId = null)
+        {
+            try
+            {
+                var exists = await _service.CheckCRDuplicateAsync(householdName, barangay, purok, excludeId);
+                return Ok(new { exists });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("backyard-gardening/check-duplicate")]
+        public async Task<IActionResult> CheckBackyardGardeningDuplicate([FromQuery] string householdName, [FromQuery] string barangay, [FromQuery] int purok, [FromQuery] int? excludeId = null)
+        {
+            try
+            {
+                var exists = await _service.CheckBackyardGardeningDuplicateAsync(householdName, barangay, purok, excludeId);
+                return Ok(new { exists });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("pregnant-women/check-duplicate")]
+        public async Task<IActionResult> CheckPregnantWomenDuplicate([FromQuery] string womanName, [FromQuery] string barangay, [FromQuery] int purok, [FromQuery] int? excludeId = null)
+        {
+            try
+            {
+                var exists = await _service.CheckPregnantWomenDuplicateAsync(womanName, barangay, purok, excludeId);
+                return Ok(new { exists });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("vegetable-seeds/check-duplicate")]
+        public async Task<IActionResult> CheckVegetableSeedDuplicate([FromQuery] string householdName, [FromQuery] string barangay, [FromQuery] int purok, [FromQuery] int? excludeId = null)
+        {
+            try
+            {
+                var exists = await _service.CheckVegetableSeedDuplicateAsync(householdName, barangay, purok, excludeId);
+                return Ok(new { exists });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("iodized-salt/check-duplicate")]
+        public async Task<IActionResult> CheckIodizedSaltDuplicate([FromQuery] string storeName, [FromQuery] string barangay, [FromQuery] int purok, [FromQuery] int? excludeId = null)
+        {
+            try
+            {
+                var exists = await _service.CheckIodizedSaltDuplicateAsync(storeName, barangay, purok, excludeId);
+                return Ok(new { exists });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         // ==================== ANIMAL RAISING ====================
         [HttpPost("animal-raising")]
         public async Task<IActionResult> CreateAnimalRaising([FromBody] AnimalRaisingEntryDto dto)
@@ -25,6 +139,10 @@ namespace Nutrition_backend.Controllers
             {
                 var result = await _service.CreateAnimalRaisingAsync(dto);
                 return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
             }
             catch (Exception ex)
             {
@@ -53,6 +171,10 @@ namespace Nutrition_backend.Controllers
             {
                 var result = await _service.UpdateAnimalRaisingAsync(id, dto);
                 return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
             }
             catch (KeyNotFoundException ex)
             {
@@ -85,7 +207,6 @@ namespace Nutrition_backend.Controllers
         {
             try
             {
-                // Pass empty string instead of null
                 var result = await _service.GetAnimalRaisingAsync(string.Empty, 0);
                 return Ok(result);
             }
@@ -103,6 +224,10 @@ namespace Nutrition_backend.Controllers
             {
                 var result = await _service.CreatePotableWaterAsync(dto);
                 return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
             }
             catch (Exception ex)
             {
@@ -146,6 +271,10 @@ namespace Nutrition_backend.Controllers
                 var result = await _service.UpdatePotableWaterAsync(id, dto);
                 return Ok(result);
             }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new { message = ex.Message });
@@ -181,6 +310,10 @@ namespace Nutrition_backend.Controllers
                 var result = await _service.CreateIodizedSaltAsync(dto);
                 return Ok(result);
             }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
@@ -188,18 +321,18 @@ namespace Nutrition_backend.Controllers
         }
 
         [HttpGet("iodized-salt/{barangay}")]
-public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int year = 0)
-{
-    try
-    {
-        var result = await _service.GetIodizedSaltAsync(barangay, year);
-        return Ok(result);
-    }
-    catch (Exception ex)
-    {
-        return BadRequest(new { message = ex.Message });
-    }
-}
+        public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int year = 0)
+        {
+            try
+            {
+                var result = await _service.GetIodizedSaltAsync(barangay, year);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
         [HttpGet("iodized-salt/all")]
         public async Task<IActionResult> GetAllIodizedSalt()
@@ -222,6 +355,10 @@ public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int
             {
                 var result = await _service.UpdateIodizedSaltAsync(id, dto);
                 return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
             }
             catch (KeyNotFoundException ex)
             {
@@ -258,6 +395,10 @@ public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int
                 var result = await _service.CreateCRAsync(dto);
                 return Ok(result);
             }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
@@ -278,7 +419,7 @@ public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int
             }
         }
 
-       [HttpGet("cr/all")]
+        [HttpGet("cr/all")]
         public async Task<IActionResult> GetAllCR()
         {
             try
@@ -299,6 +440,10 @@ public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int
             {
                 var result = await _service.UpdateCRAsync(id, dto);
                 return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
             }
             catch (KeyNotFoundException ex)
             {
@@ -334,6 +479,10 @@ public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int
             {
                 var result = await _service.CreateBackyardGardeningAsync(dto);
                 return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
             }
             catch (Exception ex)
             {
@@ -377,6 +526,10 @@ public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int
                 var result = await _service.UpdateBackyardGardeningAsync(id, dto);
                 return Ok(result);
             }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new { message = ex.Message });
@@ -412,6 +565,10 @@ public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int
                 var result = await _service.CreatePregnantWomenAsync(dto);
                 return Ok(result);
             }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
@@ -432,7 +589,7 @@ public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int
             }
         }
 
-       [HttpGet("pregnant-women/all")]
+        [HttpGet("pregnant-women/all")]
         public async Task<IActionResult> GetAllPregnantWomen()
         {
             try
@@ -453,6 +610,10 @@ public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int
             {
                 var result = await _service.UpdatePregnantWomenAsync(id, dto);
                 return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
             }
             catch (KeyNotFoundException ex)
             {
@@ -489,6 +650,10 @@ public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int
                 var result = await _service.CreateVegetableSeedAsync(dto);
                 return Ok(result);
             }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
@@ -508,7 +673,6 @@ public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int
                 return BadRequest(new { message = ex.Message });
             }
         }
-
 
         [HttpGet("vegetable-seeds/all")]
         public async Task<IActionResult> GetAllVegetableSeed()
@@ -531,6 +695,10 @@ public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int
             {
                 var result = await _service.UpdateVegetableSeedAsync(id, dto);
                 return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
             }
             catch (KeyNotFoundException ex)
             {
@@ -567,6 +735,10 @@ public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int
                 var result = await _service.CreateAnimalDispersalAsync(dto);
                 return Ok(result);
             }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
@@ -594,6 +766,10 @@ public async Task<IActionResult> GetIodizedSalt(string barangay, [FromQuery] int
             {
                 var result = await _service.UpdateAnimalDispersalAsync(id, dto);
                 return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
             }
             catch (KeyNotFoundException ex)
             {
