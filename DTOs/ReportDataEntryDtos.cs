@@ -42,9 +42,9 @@ namespace Nutrition_backend.DTOs
         [Required]
     public string HouseholdName { get; set; } = string.Empty;
 
-        public int Level1 { get; set; }
-        public int Level2 { get; set; }
-        public int Level3 { get; set; }
+        public bool Level1 { get; set; }
+        public bool Level2 { get; set; }
+        public bool Level3 { get; set; }
         public int Year { get; set; }
         public DateTime RecordedDate { get; set; }
         public string? RecordedBy { get; set; }
@@ -207,9 +207,9 @@ namespace Nutrition_backend.DTOs
         public string Barangay { get; set; } = string.Empty;
         public int Purok { get; set; }
          public string HouseholdName { get; set; } = string.Empty;
-        public int Level1 { get; set; }
-        public int Level2 { get; set; }
-        public int Level3 { get; set; }
+        public bool Level1 { get; set; }
+        public bool Level2 { get; set; }
+        public bool Level3 { get; set; }
         public int Year { get; set; }
         public string? RecordedBy { get; set; }
         public DateTime RecordedDate { get; set; }

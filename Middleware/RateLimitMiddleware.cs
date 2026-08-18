@@ -17,8 +17,8 @@ namespace Nutrition_backend.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
-            // Only apply to login endpoint
-            if (context.Request.Path.StartsWithSegments("/api/auth/login"))
+            // Only apply to actual login POSTs, not CORS preflight (OPTIONS)
+            if (context.Request.Method == "POST" && context.Request.Path.StartsWithSegments("/api/auth/login"))
             {
                 var ipAddress = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
                 var key = $"login_{ipAddress}";

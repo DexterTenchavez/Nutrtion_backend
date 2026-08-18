@@ -17,9 +17,9 @@ namespace Nutrition_backend.Models
         [Required]
         public string HouseholdName { get; set; } = string.Empty;
         
-        public int Level1 { get; set; }
-        public int Level2 { get; set; }
-        public int Level3 { get; set; }
+        public bool Level1 { get; set; }
+        public bool Level2 { get; set; }
+        public bool Level3 { get; set; }
         
         public int Year { get; set; }
         public DateTime RecordedDate { get; set; } = DateTime.UtcNow;
