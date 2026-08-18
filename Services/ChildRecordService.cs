@@ -12,6 +12,7 @@ namespace Nutrition_backend.Services
         Task<ChildRecord?> GetByIdAsync(int id);
         Task<ChildRecord> UpdateAsync(int id, ChildRecordDto dto);
         Task<bool> DeleteAsync(int id);
+        Task<bool> DeleteManyAsync(List<int> ids);
         Task<bool> CheckDuplicateAsync(string fullName, string barangay, int purok, int? excludeId = null);
     }
 
@@ -104,6 +105,20 @@ namespace Nutrition_backend.Services
                 return false;
 
             _context.ChildRecords.Remove(record);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteManyAsync(List<int> ids)
+        {
+            if (ids == null || ids.Count == 0)
+                return false;
+
+            var records = await _context.ChildRecords.Where(r => ids.Contains(r.Id)).ToListAsync();
+            if (records.Count == 0)
+                return false;
+
+            _context.ChildRecords.RemoveRange(records);
             await _context.SaveChangesAsync();
             return true;
         }

@@ -202,6 +202,22 @@ namespace Nutrition_backend.Controllers
             }
         }
 
+        [HttpPost("animal-raising/batch-delete")]
+        public async Task<IActionResult> BatchDeleteAnimalRaising([FromBody] List<int> ids)
+        {
+            try
+            {
+                var result = await _service.DeleteAnimalRaisingManyAsync(ids);
+                if (!result)
+                    return NotFound(new { message = "No records found" });
+                return Ok(new { message = "Records deleted successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpGet("animal-raising/all")]
         public async Task<IActionResult> GetAllAnimalRaising()
         {
@@ -301,6 +317,22 @@ namespace Nutrition_backend.Controllers
             }
         }
 
+        [HttpPost("potable-water/batch-delete")]
+        public async Task<IActionResult> BatchDeletePotableWater([FromBody] List<int> ids)
+        {
+            try
+            {
+                var result = await _service.DeletePotableWaterManyAsync(ids);
+                if (!result)
+                    return NotFound(new { message = "No records found" });
+                return Ok(new { message = "Records deleted successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         // ==================== IODIZED SALT ====================
         [HttpPost("iodized-salt")]
         public async Task<IActionResult> CreateIodizedSalt([FromBody] IodizedSaltEntryDto dto)
@@ -379,6 +411,22 @@ namespace Nutrition_backend.Controllers
                 if (!result)
                     return NotFound(new { message = "Record not found" });
                 return Ok(new { message = "Record deleted successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("iodized-salt/batch-delete")]
+        public async Task<IActionResult> BatchDeleteIodizedSalt([FromBody] List<int> ids)
+        {
+            try
+            {
+                var result = await _service.DeleteIodizedSaltManyAsync(ids);
+                if (!result)
+                    return NotFound(new { message = "No records found" });
+                return Ok(new { message = "Records deleted successfully" });
             }
             catch (Exception ex)
             {
@@ -471,6 +519,22 @@ namespace Nutrition_backend.Controllers
             }
         }
 
+        [HttpPost("cr/batch-delete")]
+        public async Task<IActionResult> BatchDeleteCR([FromBody] List<int> ids)
+        {
+            try
+            {
+                var result = await _service.DeleteCRManyAsync(ids);
+                if (!result)
+                    return NotFound(new { message = "No records found" });
+                return Ok(new { message = "Records deleted successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         // ==================== BACKYARD GARDENING ====================
         [HttpPost("backyard-gardening")]
         public async Task<IActionResult> CreateBackyardGardening([FromBody] BackyardGardeningEntryDto dto)
@@ -549,6 +613,22 @@ namespace Nutrition_backend.Controllers
                 if (!result)
                     return NotFound(new { message = "Record not found" });
                 return Ok(new { message = "Record deleted successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("backyard-gardening/batch-delete")]
+        public async Task<IActionResult> BatchDeleteBackyardGardening([FromBody] List<int> ids)
+        {
+            try
+            {
+                var result = await _service.DeleteBackyardGardeningManyAsync(ids);
+                if (!result)
+                    return NotFound(new { message = "No records found" });
+                return Ok(new { message = "Records deleted successfully" });
             }
             catch (Exception ex)
             {
@@ -641,6 +721,22 @@ namespace Nutrition_backend.Controllers
             }
         }
 
+        [HttpPost("pregnant-women/batch-delete")]
+        public async Task<IActionResult> BatchDeletePregnantWomen([FromBody] List<int> ids)
+        {
+            try
+            {
+                var result = await _service.DeletePregnantWomenManyAsync(ids);
+                if (!result)
+                    return NotFound(new { message = "No records found" });
+                return Ok(new { message = "Records deleted successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         // ==================== VEGETABLE SEEDS ====================
         [HttpPost("vegetable-seeds")]
         public async Task<IActionResult> CreateVegetableSeed([FromBody] VegetableSeedEntryDto dto)
@@ -726,6 +822,22 @@ namespace Nutrition_backend.Controllers
             }
         }
 
+        [HttpPost("vegetable-seeds/batch-delete")]
+        public async Task<IActionResult> BatchDeleteVegetableSeed([FromBody] List<int> ids)
+        {
+            try
+            {
+                var result = await _service.DeleteVegetableSeedManyAsync(ids);
+                if (!result)
+                    return NotFound(new { message = "No records found" });
+                return Ok(new { message = "Records deleted successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         // ==================== ANIMAL DISPERSAL ====================
         [HttpPost("animal-dispersal")]
         public async Task<IActionResult> CreateAnimalDispersal([FromBody] AnimalDispersalEntryDto dto)
@@ -804,6 +916,22 @@ namespace Nutrition_backend.Controllers
                 if (!result)
                     return NotFound(new { message = "Record not found" });
                 return Ok(new { message = "Record deleted successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("animal-dispersal/batch-delete")]
+        public async Task<IActionResult> BatchDeleteAnimalDispersal([FromBody] List<int> ids)
+        {
+            try
+            {
+                var result = await _service.DeleteAnimalDispersalManyAsync(ids);
+                if (!result)
+                    return NotFound(new { message = "No records found" });
+                return Ok(new { message = "Records deleted successfully" });
             }
             catch (Exception ex)
             {

@@ -24,6 +24,8 @@ namespace Nutrition_backend.DTOs
         public int CowFemale { get; set; }
         public int CarabaoMale { get; set; }
         public int CarabaoFemale { get; set; }
+        public int OtherMale { get; set; }
+        public int OtherFemale { get; set; }
         
         public int Year { get; set; }
         public DateTime RecordedDate { get; set; }
@@ -175,6 +177,8 @@ namespace Nutrition_backend.DTOs
         public int CowFemale { get; set; }
         public int CarabaoMale { get; set; }
         public int CarabaoFemale { get; set; }
+        public int OtherMale { get; set; }
+        public int OtherFemale { get; set; }
         public DateTime RecordedDate { get; set; }
         public int Year { get; set; }
         public string? RecordedBy { get; set; }
@@ -196,6 +200,8 @@ namespace Nutrition_backend.DTOs
         public int CowFemale { get; set; }
         public int CarabaoMale { get; set; }
         public int CarabaoFemale { get; set; }
+        public int OtherMale { get; set; }
+        public int OtherFemale { get; set; }
         public int Year { get; set; }
         public string? RecordedBy { get; set; }
         public DateTime RecordedDate { get; set; }
@@ -307,6 +313,8 @@ namespace Nutrition_backend.DTOs
         public int CowFemale { get; set; }
         public int CarabaoMale { get; set; }
         public int CarabaoFemale { get; set; }
+        public int OtherMale { get; set; }
+        public int OtherFemale { get; set; }
         public int Year { get; set; }
         public string? RecordedBy { get; set; }
         public DateTime RecordedDate { get; set; }

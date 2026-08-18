@@ -11,41 +11,49 @@ namespace Nutrition_backend.Services
         Task<List<AnimalRaisingResponseDto>> GetAnimalRaisingAsync(string barangay, int year);
         Task<AnimalRaisingResponseDto> UpdateAnimalRaisingAsync(int id, AnimalRaisingEntryDto dto);
         Task<bool> DeleteAnimalRaisingAsync(int id);
+        Task<bool> DeleteAnimalRaisingManyAsync(List<int> ids);
 
         Task<PotableWaterResponseDto> CreatePotableWaterAsync(PotableWaterEntryDto dto);
         Task<List<PotableWaterResponseDto>> GetPotableWaterAsync(string barangay, int year);
         Task<PotableWaterResponseDto> UpdatePotableWaterAsync(int id, PotableWaterEntryDto dto);
         Task<bool> DeletePotableWaterAsync(int id);
+        Task<bool> DeletePotableWaterManyAsync(List<int> ids);
 
         Task<IodizedSaltResponseDto> CreateIodizedSaltAsync(IodizedSaltEntryDto dto);
         Task<List<IodizedSaltResponseDto>> GetIodizedSaltAsync(string barangay, int year);
         Task<IodizedSaltResponseDto> UpdateIodizedSaltAsync(int id, IodizedSaltEntryDto dto);
         Task<bool> DeleteIodizedSaltAsync(int id);
+        Task<bool> DeleteIodizedSaltManyAsync(List<int> ids);
 
         Task<CRResponseDto> CreateCRAsync(CREntryDto dto);
         Task<List<CRResponseDto>> GetCRAsync(string barangay, int year);
         Task<CRResponseDto> UpdateCRAsync(int id, CREntryDto dto);
         Task<bool> DeleteCRAsync(int id);
+        Task<bool> DeleteCRManyAsync(List<int> ids);
 
         Task<BackyardGardeningResponseDto> CreateBackyardGardeningAsync(BackyardGardeningEntryDto dto);
         Task<List<BackyardGardeningResponseDto>> GetBackyardGardeningAsync(string barangay, int year);
         Task<BackyardGardeningResponseDto> UpdateBackyardGardeningAsync(int id, BackyardGardeningEntryDto dto);
         Task<bool> DeleteBackyardGardeningAsync(int id);
+        Task<bool> DeleteBackyardGardeningManyAsync(List<int> ids);
 
         Task<PregnantWomenResponseDto> CreatePregnantWomenAsync(PregnantWomenEntryDto dto);
         Task<List<PregnantWomenResponseDto>> GetPregnantWomenAsync(string barangay, int year);
         Task<PregnantWomenResponseDto> UpdatePregnantWomenAsync(int id, PregnantWomenEntryDto dto);
         Task<bool> DeletePregnantWomenAsync(int id);
+        Task<bool> DeletePregnantWomenManyAsync(List<int> ids);
 
         Task<VegetableSeedResponseDto> CreateVegetableSeedAsync(VegetableSeedEntryDto dto);
         Task<List<VegetableSeedResponseDto>> GetVegetableSeedAsync(string barangay, int year);
         Task<VegetableSeedResponseDto> UpdateVegetableSeedAsync(int id, VegetableSeedEntryDto dto);
         Task<bool> DeleteVegetableSeedAsync(int id);
+        Task<bool> DeleteVegetableSeedManyAsync(List<int> ids);
 
         Task<AnimalDispersalResponseDto> CreateAnimalDispersalAsync(AnimalDispersalEntryDto dto);
         Task<List<AnimalDispersalResponseDto>> GetAnimalDispersalAsync(string barangay, int year);
         Task<AnimalDispersalResponseDto> UpdateAnimalDispersalAsync(int id, AnimalDispersalEntryDto dto);
         Task<bool> DeleteAnimalDispersalAsync(int id);
+        Task<bool> DeleteAnimalDispersalManyAsync(List<int> ids);
 
 
         Task<bool> CheckAnimalRaisingDuplicateAsync(string householdName, string barangay, int purok, int? excludeId = null);
@@ -91,6 +99,8 @@ namespace Nutrition_backend.Services
                 CowFemale = dto.CowFemale,
                 CarabaoMale = dto.CarabaoMale,
                 CarabaoFemale = dto.CarabaoFemale,
+                OtherMale = dto.OtherMale,
+                OtherFemale = dto.OtherFemale,
                 Year = dto.Year,
                 RecordedBy = dto.RecordedBy,
                 RecordedDate = dto.RecordedDate
@@ -115,6 +125,8 @@ namespace Nutrition_backend.Services
                 CowFemale = report.CowFemale,
                 CarabaoMale = report.CarabaoMale,
                 CarabaoFemale = report.CarabaoFemale,
+                OtherMale = report.OtherMale,
+                OtherFemale = report.OtherFemale,
                 Year = report.Year,
                 RecordedBy = report.RecordedBy,
                 RecordedDate = report.RecordedDate
@@ -146,6 +158,8 @@ namespace Nutrition_backend.Services
             report.CowFemale = dto.CowFemale;
             report.CarabaoMale = dto.CarabaoMale;
             report.CarabaoFemale = dto.CarabaoFemale;
+            report.OtherMale = dto.OtherMale;
+            report.OtherFemale = dto.OtherFemale;
             report.Year = dto.Year;
             report.RecordedDate = dto.RecordedDate != DateTime.MinValue ? dto.RecordedDate : DateTime.UtcNow;
             report.RecordedBy = dto.RecordedBy;
@@ -168,6 +182,8 @@ namespace Nutrition_backend.Services
                 CowFemale = report.CowFemale,
                 CarabaoMale = report.CarabaoMale,
                 CarabaoFemale = report.CarabaoFemale,
+                OtherMale = report.OtherMale,
+                OtherFemale = report.OtherFemale,
                 Year = report.Year,
                 RecordedBy = report.RecordedBy,
                 RecordedDate = report.RecordedDate
@@ -208,6 +224,8 @@ namespace Nutrition_backend.Services
                 CowFemale = r.CowFemale,
                 CarabaoMale = r.CarabaoMale,
                 CarabaoFemale = r.CarabaoFemale,
+                OtherMale = r.OtherMale,
+                OtherFemale = r.OtherFemale,
                 Year = r.Year,
                 RecordedBy = r.RecordedBy,
                 RecordedDate = r.RecordedDate
@@ -219,6 +237,16 @@ namespace Nutrition_backend.Services
             var report = await _context.AnimalRaisingReports.FindAsync(id);
             if (report == null) return false;
             _context.AnimalRaisingReports.Remove(report);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteAnimalRaisingManyAsync(List<int> ids)
+        {
+            if (ids == null || ids.Count == 0) return false;
+            var reports = await _context.AnimalRaisingReports.Where(r => ids.Contains(r.Id)).ToListAsync();
+            if (reports.Count == 0) return false;
+            _context.AnimalRaisingReports.RemoveRange(reports);
             await _context.SaveChangesAsync();
             return true;
         }
@@ -340,6 +368,16 @@ namespace Nutrition_backend.Services
             var report = await _context.PotableWaterReports.FindAsync(id);
             if (report == null) return false;
             _context.PotableWaterReports.Remove(report);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeletePotableWaterManyAsync(List<int> ids)
+        {
+            if (ids == null || ids.Count == 0) return false;
+            var reports = await _context.PotableWaterReports.Where(r => ids.Contains(r.Id)).ToListAsync();
+            if (reports.Count == 0) return false;
+            _context.PotableWaterReports.RemoveRange(reports);
             await _context.SaveChangesAsync();
             return true;
         }
@@ -513,6 +551,16 @@ namespace Nutrition_backend.Services
             return true;
         }
 
+        public async Task<bool> DeleteIodizedSaltManyAsync(List<int> ids)
+        {
+            if (ids == null || ids.Count == 0) return false;
+            var reports = await _context.IodizedSaltReports.Where(r => ids.Contains(r.Id)).ToListAsync();
+            if (reports.Count == 0) return false;
+            _context.IodizedSaltReports.RemoveRange(reports);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         // ==================== CR ====================
         public async Task<CRResponseDto> CreateCRAsync(CREntryDto dto)
         {
@@ -628,6 +676,16 @@ namespace Nutrition_backend.Services
             return true;
         }
 
+        public async Task<bool> DeleteCRManyAsync(List<int> ids)
+        {
+            if (ids == null || ids.Count == 0) return false;
+            var reports = await _context.CRReports.Where(r => ids.Contains(r.Id)).ToListAsync();
+            if (reports.Count == 0) return false;
+            _context.CRReports.RemoveRange(reports);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         // ==================== BACKYARD GARDENING ====================
         public async Task<BackyardGardeningResponseDto> CreateBackyardGardeningAsync(BackyardGardeningEntryDto dto)
         {
@@ -735,6 +793,16 @@ namespace Nutrition_backend.Services
             var report = await _context.BackyardGardeningReports.FindAsync(id);
             if (report == null) return false;
             _context.BackyardGardeningReports.Remove(report);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteBackyardGardeningManyAsync(List<int> ids)
+        {
+            if (ids == null || ids.Count == 0) return false;
+            var reports = await _context.BackyardGardeningReports.Where(r => ids.Contains(r.Id)).ToListAsync();
+            if (reports.Count == 0) return false;
+            _context.BackyardGardeningReports.RemoveRange(reports);
             await _context.SaveChangesAsync();
             return true;
         }
@@ -865,6 +933,16 @@ namespace Nutrition_backend.Services
             return true;
         }
 
+        public async Task<bool> DeletePregnantWomenManyAsync(List<int> ids)
+        {
+            if (ids == null || ids.Count == 0) return false;
+            var reports = await _context.PregnantWomenReports.Where(r => ids.Contains(r.Id)).ToListAsync();
+            if (reports.Count == 0) return false;
+            _context.PregnantWomenReports.RemoveRange(reports);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         // ==================== VEGETABLE SEEDS ====================
         public async Task<VegetableSeedResponseDto> CreateVegetableSeedAsync(VegetableSeedEntryDto dto)
         {
@@ -978,6 +1056,16 @@ namespace Nutrition_backend.Services
             return true;
         }
 
+        public async Task<bool> DeleteVegetableSeedManyAsync(List<int> ids)
+        {
+            if (ids == null || ids.Count == 0) return false;
+            var reports = await _context.VegetableSeedReports.Where(r => ids.Contains(r.Id)).ToListAsync();
+            if (reports.Count == 0) return false;
+            _context.VegetableSeedReports.RemoveRange(reports);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         // ==================== ANIMAL DISPERSAL ====================
         public async Task<AnimalDispersalResponseDto> CreateAnimalDispersalAsync(AnimalDispersalEntryDto dto)
         {
@@ -1002,6 +1090,8 @@ namespace Nutrition_backend.Services
                 CowFemale = dto.CowFemale,
                 CarabaoMale = dto.CarabaoMale,
                 CarabaoFemale = dto.CarabaoFemale,
+                OtherMale = dto.OtherMale,
+                OtherFemale = dto.OtherFemale,
                 Year = dto.Year,
                 RecordedBy = dto.RecordedBy,
                 RecordedDate = dto.RecordedDate != DateTime.MinValue ? dto.RecordedDate : DateTime.UtcNow
@@ -1026,6 +1116,8 @@ namespace Nutrition_backend.Services
                 CowFemale = report.CowFemale,
                 CarabaoMale = report.CarabaoMale,
                 CarabaoFemale = report.CarabaoFemale,
+                OtherMale = report.OtherMale,
+                OtherFemale = report.OtherFemale,
                 Year = report.Year,
                 RecordedBy = report.RecordedBy,
                 RecordedDate = report.RecordedDate
@@ -1057,6 +1149,8 @@ namespace Nutrition_backend.Services
             report.CowFemale = dto.CowFemale;
             report.CarabaoMale = dto.CarabaoMale;
             report.CarabaoFemale = dto.CarabaoFemale;
+            report.OtherMale = dto.OtherMale;
+            report.OtherFemale = dto.OtherFemale;
             report.Year = dto.Year;
             report.RecordedDate = dto.RecordedDate != DateTime.MinValue ? dto.RecordedDate : DateTime.UtcNow;
             report.RecordedBy = dto.RecordedBy;
@@ -1079,6 +1173,8 @@ namespace Nutrition_backend.Services
                 CowFemale = report.CowFemale,
                 CarabaoMale = report.CarabaoMale,
                 CarabaoFemale = report.CarabaoFemale,
+                OtherMale = report.OtherMale,
+                OtherFemale = report.OtherFemale,
                 Year = report.Year,
                 RecordedBy = report.RecordedBy,
                 RecordedDate = report.RecordedDate
@@ -1118,6 +1214,8 @@ namespace Nutrition_backend.Services
                 CowFemale = r.CowFemale,
                 CarabaoMale = r.CarabaoMale,
                 CarabaoFemale = r.CarabaoFemale,
+                OtherMale = r.OtherMale,
+                OtherFemale = r.OtherFemale,
                 Year = r.Year,
                 RecordedBy = r.RecordedBy,
                 RecordedDate = r.RecordedDate
@@ -1129,6 +1227,16 @@ namespace Nutrition_backend.Services
             var report = await _context.AnimalDispersalReports.FindAsync(id);
             if (report == null) return false;
             _context.AnimalDispersalReports.Remove(report);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteAnimalDispersalManyAsync(List<int> ids)
+        {
+            if (ids == null || ids.Count == 0) return false;
+            var reports = await _context.AnimalDispersalReports.Where(r => ids.Contains(r.Id)).ToListAsync();
+            if (reports.Count == 0) return false;
+            _context.AnimalDispersalReports.RemoveRange(reports);
             await _context.SaveChangesAsync();
             return true;
         }

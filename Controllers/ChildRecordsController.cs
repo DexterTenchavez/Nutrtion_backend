@@ -151,5 +151,21 @@ public async Task<IActionResult> CheckDuplicate([FromBody] CheckDuplicateDto dto
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpPost("batch-delete")]
+        public async Task<IActionResult> BatchDelete([FromBody] List<int> ids)
+        {
+            try
+            {
+                var result = await _childRecordService.DeleteManyAsync(ids);
+                if (!result)
+                    return NotFound(new { message = "No records found" });
+                return Ok(new { message = "Records deleted successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }

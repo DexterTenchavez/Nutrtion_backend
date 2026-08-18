@@ -35,6 +35,10 @@ namespace Nutrition_backend.Models
         public int CarabaoMale { get; set; }
         public int CarabaoFemale { get; set; }
         
+        // Other
+        public int OtherMale { get; set; }
+        public int OtherFemale { get; set; }
+        
         public int Year { get; set; }
         public DateTime RecordedDate { get; set; } = DateTime.UtcNow;
         
