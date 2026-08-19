@@ -121,7 +121,14 @@ Nutrition_backend/
 │   ├── AuthService.cs
 │   ├── ChildRecordService.cs
 │   ├── PasswordService.cs
-│   ├── ReportDataEntryService.cs
+│   ├── AnimalRaisingService.cs
+│   ├── AnimalDispersalService.cs
+│   ├── PotableWaterService.cs
+│   ├── IodizedSaltService.cs
+│   ├── CRService.cs
+│   ├── BackyardGardeningService.cs
+│   ├── PregnantWomenService.cs
+│   ├── VegetableSeedService.cs
 │   └── ReportService.cs
 ├── appsettings.json
 ├── appsettings.Development.json

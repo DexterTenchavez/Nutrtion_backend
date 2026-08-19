@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Nutrition_backend.Data;
 
@@ -11,9 +12,11 @@ using Nutrition_backend.Data;
 namespace Nutrition_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260819120000_AddBeneficiariesToVegetableSeed")]
+    partial class AddBeneficiariesToVegetableSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -569,7 +572,7 @@ namespace Nutrition_backend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2026, 8, 19, 5, 37, 34, 180, DateTimeKind.Utc).AddTicks(1690),
+                            CreatedAt = new DateTime(2026, 8, 19, 12, 0, 0, 0, DateTimeKind.Utc),
                             Email = "dextertenchavez@gmail.com",
                             IsActive = true,
                             PasswordHash = "$2a$12$bpNqnsk2pO8EmR7mdumID.oNto8kb6O4xdmyQWf.nZ3ZVZhJnmOmO",
@@ -591,9 +594,6 @@ namespace Nutrition_backend.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
-                    b.Property<string>("Beneficiaries")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("HouseholdName")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -609,6 +609,9 @@ namespace Nutrition_backend.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("SeedTypes")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Beneficiaries")
                         .HasColumnType("longtext");
 
                     b.Property<int>("Year")

@@ -82,7 +82,14 @@ builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IChildRecordService, ChildRecordService>();
-builder.Services.AddScoped<IReportDataEntryService, ReportDataEntryService>();
+builder.Services.AddScoped<IAnimalRaisingService, AnimalRaisingService>();
+builder.Services.AddScoped<IPotableWaterService, PotableWaterService>();
+builder.Services.AddScoped<IIodizedSaltService, IodizedSaltService>();
+builder.Services.AddScoped<ICRService, CRService>();
+builder.Services.AddScoped<IBackyardGardeningService, BackyardGardeningService>();
+builder.Services.AddScoped<IPregnantWomenService, PregnantWomenService>();
+builder.Services.AddScoped<IVegetableSeedService, VegetableSeedService>();
+builder.Services.AddScoped<IAnimalDispersalService, AnimalDispersalService>();
 
 builder.Services.AddCors(options =>
 {

@@ -19,6 +19,8 @@ namespace Nutrition_backend.Models
         
         public string? SeedTypes { get; set; }
         
+        public string? Beneficiaries { get; set; }
+        
         public int Year { get; set; }
         public DateTime RecordedDate { get; set; } = DateTime.UtcNow;
         
