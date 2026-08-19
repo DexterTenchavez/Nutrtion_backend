@@ -15,6 +15,7 @@ namespace Nutrition_backend.Services
         Task<AuthResponseDto> LoginAsync(LoginDto loginDto);
         Task<User?> GetUserByIdAsync(int id);
         Task<bool> UserExistsAsync(string username);
+        Task ChangePasswordAsync(int userId, string currentPassword, string newPassword);
     }
 
     public class AuthService : IAuthService
@@ -71,6 +72,28 @@ namespace Nutrition_backend.Services
         public async Task<bool> UserExistsAsync(string username)
         {
             return await _context.Users.AnyAsync(u => u.Username == username);
+        }
+
+        public async Task ChangePasswordAsync(int userId, string currentPassword, string newPassword)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException("User not found");
+            }
+
+            if (!_passwordService.VerifyPassword(currentPassword, user.PasswordHash))
+            {
+                throw new UnauthorizedAccessException("Current password is incorrect");
+            }
+
+            if (_passwordService.VerifyPassword(newPassword, user.PasswordHash))
+            {
+                throw new InvalidOperationException("New password must be different from the current password");
+            }
+
+            user.PasswordHash = _passwordService.HashPassword(newPassword);
+            await _context.SaveChangesAsync();
         }
 
         private string GenerateJwtToken(User user)
